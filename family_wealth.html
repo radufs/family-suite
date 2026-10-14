@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Family Wealth v5</title>
+<style>
+:root{
+  --bg:#f4f7fa;--card:#fff;--text:#17212b;--muted:#6b7886;--line:#dde4eb;
+  --accent:#1f6feb;--accent-soft:#eaf2ff;--asset:#198754;--liability:#c0392b;
+  --forecast:#7b5cff;--shadow:0 10px 30px rgba(20,30,50,.06)
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(#f8fafc,#eef2f6);color:var(--text)}
+.wrap{max-width:1220px;margin:auto;padding:28px 18px 52px}
+header{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;flex-wrap:wrap}
+h1{margin:0 0 6px;font-size:30px}.subtitle{color:var(--muted);font-size:14px}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);padding:10px 13px;background:#fff;color:var(--text)}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700}
+button:hover{filter:brightness(.985)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 16px}
+.tab{font-weight:650}.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.summary{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:20px;margin-bottom:14px}
+.summary h2{margin:0 0 9px}.actions{display:flex;gap:8px;flex-wrap:wrap}
+.metrics{display:grid;grid-template-columns:repeat(5,minmax(120px,1fr));gap:10px;min-width:760px}
+.metric{padding:12px;border:1px solid var(--line);border-radius:12px;background:#fafbfd;text-align:right}
+.metric span{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.07em}
+.metric strong{display:block;font-size:20px;margin-top:4px;font-variant-numeric:tabular-nums}
+.metric.assets strong{color:var(--asset)}.metric.liabilities strong{color:var(--liability)}.metric.forecast strong{color:var(--forecast)}
+.table-card{overflow:hidden}table{width:100%;border-collapse:collapse}
+th,td{padding:13px 15px;border-bottom:1px solid var(--line);text-align:left}
+th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;background:#fafbfd}
+.amount{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}.tools{text-align:right;white-space:nowrap}
+.empty{padding:34px;text-align:center;color:var(--muted)}
+.badge{display:inline-block;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:700}
+.badge.asset{background:#e9f7ef;color:#146c43}.badge.liability{background:#fdeeee;color:#a63228}.badge.category{background:var(--accent-soft);color:#245aa5}
+.family-top{display:grid;grid-template-columns:.8fr 1.2fr;gap:14px;margin-bottom:14px}
+.family-summary{padding:20px}.family-summary h2{margin:0 0 14px}
+.family-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:14px}
+.family-card{padding:18px;cursor:pointer}.family-card h3{margin:0}.wealth{font-size:26px;font-weight:800;margin-top:8px}
+.submetrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.submetric{font-size:12px;color:var(--muted);padding:7px 9px;background:#fafbfd;border:1px solid var(--line);border-radius:9px}
+.submetric strong{display:block;margin-top:3px;color:var(--text)}
+.chart-card{padding:18px}.chart-card h3{margin:0 0 10px;font-size:16px}.wealth-stack{display:grid;gap:10px;margin-top:10px}.wealth-stack .metric{text-align:left}.allocation-compare{display:grid;grid-template-columns:1fr 1fr;gap:14px}.allocation-box{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fbfcfe}.allocation-box h4{margin:0 0 8px;font-size:14px}.allocation-box canvas{height:220px}.allocation-box .legend{grid-template-columns:1fr}
+canvas{width:100%;height:245px;display:block}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px;font-size:12px;color:var(--muted)}
+.legend-item{display:flex;align-items:center;gap:7px}.swatch{width:10px;height:10px;border-radius:3px;display:inline-block}
+.forecast-panel{padding:20px;margin-bottom:14px}
+.forecast-head{display:flex;justify-content:space-between;gap:12px;align-items:end;flex-wrap:wrap;margin-bottom:14px}
+.forecast-head h3{margin:0 0 4px}.yearbox{min-width:160px}
+.forecast-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.assumption-note{padding:10px 12px;background:#f7f4ff;border:1px solid #e0d9ff;border-radius:10px;color:#62539b;font-size:12px;line-height:1.45;margin-top:12px}
+.overlay{position:fixed;inset:0;background:rgba(15,22,30,.48);display:none;align-items:center;justify-content:center;padding:18px;z-index:20}.overlay.show{display:flex}
+.modal{width:min(540px,100%);background:#fff;border-radius:16px;padding:20px;box-shadow:0 18px 60px rgba(0,0,0,.22)}
+.modal h3{margin:0 0 16px}.field{margin-bottom:12px}label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+input,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.small-note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.45}
+.hidden{display:none!important}
+@media(max-width:1000px){.summary{grid-template-columns:1fr}.metrics{min-width:0}.family-top,.forecast-grid,.allocation-compare{grid-template-columns:1fr}.family-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.metrics{grid-template-columns:repeat(2,1fr)}.submetrics{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.legend{grid-template-columns:1fr}th,td{padding:10px 8px;font-size:13px}.tools button{padding:7px 8px}}
+
+.wealth-animation{padding:20px;margin-bottom:14px}
+.animation-head{display:flex;justify-content:space-between;gap:14px;align-items:end;flex-wrap:wrap;margin-bottom:14px}
+.animation-head h3{margin:0 0 4px}
+.animation-controls{display:flex;gap:8px;align-items:end;flex-wrap:wrap}
+.animation-controls .field-mini{min-width:120px}
+.animation-controls label{margin-bottom:5px}
+.animation-controls select,.animation-controls input{padding:9px 10px}
+.animation-stage{display:grid;grid-template-columns:.8fr 1.2fr;gap:14px}
+.animation-values{display:grid;grid-template-columns:1fr;gap:10px}
+.animation-value{padding:14px;border:1px solid var(--line);border-radius:12px;background:#fafbfd}
+.animation-value span{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.07em}
+.animation-value strong{display:block;font-size:27px;margin-top:4px;font-variant-numeric:tabular-nums}
+.animation-value.year strong{color:var(--forecast);font-size:34px}
+.animation-chart{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fbfcfe}
+.animation-chart h4{margin:0 0 8px}
+.animation-chart canvas{height:250px}
+.animation-slider{width:100%;margin-top:14px}
+.animation-progress{height:8px;background:#edf1f5;border-radius:999px;overflow:hidden;margin-top:10px}
+.animation-progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--forecast))}
+@media(max-width:1000px){.animation-stage{grid-template-columns:1fr}}
+
+</style>
+<style id="familyHubNavStyle">
+.family-hub-nav{max-width:1280px;margin:14px auto 0;padding:0 16px;display:flex;gap:8px;flex-wrap:wrap}
+.family-hub-nav a{text-decoration:none;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:13px;font-weight:700;padding:9px 13px;border-radius:10px;border:1px solid rgba(120,140,160,.35);background:rgba(255,255,255,.92);color:#203040;box-shadow:0 4px 14px rgba(20,30,50,.05)}
+.family-hub-nav a:hover{filter:brightness(.98)}
+.family-hub-nav a.active{background:#1f6feb;border-color:#1f6feb;color:#fff}
+</style>
+<style>
+/* Family Suite v13 categorized navigation */
+.suite-menu-bar{position:relative;z-index:10000;display:flex;align-items:center;gap:12px;padding:10px 14px;margin:0 0 12px;border:1px solid rgba(148,163,184,.22);border-radius:14px;background:rgba(15,23,42,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 8px 24px rgba(0,0,0,.12);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#e5e7eb}
+.suite-menu-bar a{text-decoration:none}
+.suite-menu{position:relative}
+.suite-menu>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;font-size:14px;font-weight:800;letter-spacing:.01em;color:#f8fafc;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);user-select:none}
+.suite-menu>summary::-webkit-details-marker{display:none}
+.suite-menu>summary:hover{background:rgba(255,255,255,.12)}
+.suite-menu[open]>summary{background:rgba(56,189,248,.14);border-color:rgba(56,189,248,.30)}
+.suite-menu-current{font-size:12px;font-weight:700;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.suite-menu-panel{position:absolute;top:calc(100% + 8px);left:0;width:min(340px,calc(100vw - 28px));max-height:76vh;overflow:auto;padding:10px;border-radius:14px;background:#0f172a;border:1px solid rgba(148,163,184,.28);box-shadow:0 24px 55px rgba(0,0,0,.32)}
+.suite-menu-category{padding:8px 6px 10px;border-bottom:1px solid rgba(148,163,184,.14)}
+.suite-menu-category:last-child{border-bottom:0}
+.suite-menu-category-title{padding:0 8px 5px;font-size:10px;line-height:1.2;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#64748b}
+.suite-menu-link{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 9px;border-radius:9px;color:#dbeafe;font-size:13px;font-weight:650}
+.suite-menu-link:hover{background:rgba(148,163,184,.12);color:#fff}
+.suite-menu-link.active{background:rgba(56,189,248,.16);color:#7dd3fc}
+.suite-menu-link.active::after{content:"Current";font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#38bdf8}
+@media (max-width:640px){.suite-menu-bar{margin-bottom:10px;border-radius:12px}.suite-menu-current{display:none}.suite-menu-panel{max-height:72vh}}
+</style><style id="continuityStyle">.continuity-toolbar{display:flex;gap:12px;align-items:center;margin-bottom:14px;font-size:12px;color:var(--muted)}
+#continuityMap{max-width:900px;margin:auto;padding:25px;font-size:13px;line-height:1.35}
+#continuityMap h2{margin:0;font-size:25px}#continuityMap h3{font-size:15px;margin:14px 0 5px;color:#245aa5}
+#continuityMap p{margin:5px 0}#continuityMap th,#continuityMap td{padding:5px 8px;font-size:12px}#continuityMap ol{padding-left:20px;margin:5px 0}#continuityMap li{margin:4px 0}
+#continuityMap .cm-rule,#continuityMap .cm-legal{padding:8px 10px;background:#f2f6fc;border:1px solid #dde4eb;border-radius:8px}
+#continuityMap .cm-intro{color:#526475}#continuityMap .cm-meta{font-size:12px}#continuityMap footer{margin-top:12px;padding-top:7px;border-top:1px solid #dde4eb;font-size:10px}
+@page continuity{size:A4 portrait;margin:10mm}
+@media print{
+body.continuity-active{background:#fff;color:#111}
+body.continuity-active>nav,body.continuity-active>.overlay,body.continuity-active .wrap>header,body.continuity-active #tabs,body.continuity-active #memberView,body.continuity-active #familyView,body.continuity-active .wrap>.small-note,body.continuity-active .continuity-toolbar{display:none!important}
+body.continuity-active .wrap{padding:0;margin:0;max-width:none}
+body.continuity-active #continuityView{display:block!important}
+body.continuity-active #continuityMap{page:continuity;max-width:none;border:0;border-radius:0;box-shadow:none;padding:0;font:9.5pt/1.18 Arial,sans-serif;color:#111}
+body.continuity-active #continuityMap h2{font-size:18pt}body.continuity-active #continuityMap h3{font-size:10.5pt;margin:7px 0 3px;color:#111}
+body.continuity-active #continuityMap th,body.continuity-active #continuityMap td{font-size:8.5pt;padding:3px 6px;color:#111;background:#fff}
+body.continuity-active #continuityMap p{margin:4px 0}body.continuity-active #continuityMap li{margin:3px 0}
+body.continuity-active #continuityMap section{break-inside:avoid}body.continuity-active #continuityMap .cm-rule,body.continuity-active #continuityMap .cm-legal{background:#fff;padding:6px 8px}
+body.continuity-active #continuityMap footer{font-size:7.5pt;margin-top:8px}body.continuity-active #continuityMap a{color:#111;text-decoration:none}
+}
+</style><style>.suite-menu{border:0;background:transparent;padding:0;margin:0}.suite-menu>summary{line-height:1.3}</style></head>
+<body><nav aria-label="Family Suite navigation" class="suite-menu-bar"><details class="suite-menu"><summary><span aria-hidden="true">☰</span><span>Family Suite</span><span aria-hidden="true">▾</span></summary><div class="suite-menu-panel"><div class="suite-menu-category"><div class="suite-menu-category-title">Start</div><a class="suite-menu-link" href="new_tab.html">New Tab</a><a class="suite-menu-link" href="family_hub.html">Family Hub</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Family</div><a class="suite-menu-link" href="family_week.html">Family Week</a><a class="suite-menu-link" href="maintenance.html">Maintenance</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Finances</div><a aria-current="page" class="suite-menu-link active" href="family_wealth.html">Family Wealth</a><a class="suite-menu-link" href="investment_rules.html">Investment Rules</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Learning</div><a class="suite-menu-link" href="danish_lesson.html">Danish Lesson Lab</a><a class="suite-menu-link" href="Learn_Danish_v2_2026-10-14.xlsx">Danish workbook</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Health &amp; Performance</div><a class="suite-menu-link" href="longevity_hacks.html">Longevity Hacks</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Personal Systems</div><a class="suite-menu-link" href="focus_console.html">Focus Console</a><a class="suite-menu-link" href="decision_journal.html">Decision Journal</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">AI &amp; Projects</div><a class="suite-menu-link" href="radu_context.html">Radu Context</a><a class="suite-menu-link" href="project_portfolio.html">Project Portfolio</a></div></div></details><span class="suite-menu-current">Finances · Family Wealth</span></nav>
+
+<div class="wrap">
+<header>
+<div>
+<h1>Family Wealth</h1>
+<div class="subtitle">Assets, liabilities, net worth and long-term forecast · DKK · base year 2026</div>
+</div>
+<div class="top-actions">
+<button id="exportBtn">Save data</button>
+<button id="importBtn">Load data</button>
+<input accept=".json,application/json" class="hidden" id="fileInput" type="file"/>
+</div>
+</header>
+<div class="tabs" id="tabs"></div>
+<section id="continuityView" style="display:none" aria-labelledby="continuityTitle">
+<div class="continuity-toolbar"><button id="printContinuity" class="primary">Print map · A4</button><span>Print at 100% on A4 portrait, with browser headers and footers off. Fill the blanks on paper; this tab stores no information.</span></div>
+<article id="continuityMap" class="card">
+<h2 id="continuityTitle">Family Financial Continuity Map</h2>
+<p class="cm-intro">For my spouse · Family of four · Denmark · If I am temporarily unavailable</p>
+<p class="cm-meta">Reviewed together: __________ &nbsp; Next review: __________ &nbsp; Paper copy location: __________</p>
+<p class="cm-rule">Use your own authorised access. Keep passwords, MitID details, account numbers, CPR numbers, balances and personal details off this map. Institution names and broad folder labels only.</p>
+<section><h3>1 · Financial institutions</h3>
+<table><thead><tr><th>Relationship / purpose</th><th>Institution — verify, do not assume</th><th>Spouse access confirmed?</th></tr></thead><tbody>
+<tr><td>Bank accounts · household payments</td><td>________________________</td><td>Yes / No / To check</td></tr>
+<tr><td>Mortgage · bank / realkredit lender</td><td>________________________</td><td>Yes / No / To check</td></tr>
+<tr><td>ETFs / investments · long-term savings</td><td>________________________</td><td>Yes / No / To check</td></tr>
+<tr><td>Pensions · each adult's providers</td><td>________________________</td><td>Yes / No / To check</td></tr>
+<tr><td>Children's savings · both children</td><td>________________________</td><td>Yes / No / To check</td></tr>
+<tr><td>Personal savings / other funds</td><td>________________________</td><td>Yes / No / To check</td></tr>
+<tr><td>Insurance · home / life / disability / other</td><td>________________________</td><td>Yes / No / To check</td></tr>
+</tbody></table><p>Contact route: each provider's official website → customer service. Ask what authority and documents are needed.</p></section>
+<section><h3>2 · Recurring obligations</h3><p>Check the payment calendar and authorised bank view for due dates, payment method and failed payments. Keep funds available for:</p>
+<p>□ Mortgage &nbsp; □ Utilities &nbsp; □ Insurance &nbsp; □ Childcare / school &nbsp; □ Other essential bills</p>
+<p>Payment calendar location: __________ &nbsp; Betalingsservice / standing orders reviewed: __________<br>Optional savings / ETF contributions: check before pausing; keep essential bills and insurance covered.</p></section>
+<section><h3>3 · Important document locations</h3><p>Use broad shared-folder or binder labels; confirm you can open them with your own access.</p>
+<p>Mortgage / bank papers: __________ &nbsp; Investment / pension statements: __________<br>Insurance policies / claims guide: __________ &nbsp; Children's savings records: __________<br>Budget / payment calendar: __________ &nbsp; Powers of attorney / legal documents: __________</p>
+<p>Check authorised Digital Post access for public notices; verify e-Boks / mit.dk access separately for relevant private messages.</p></section>
+<section><h3>4 · Emergency priorities</h3><ol><li><b>Today:</b> Cover food, housing and children's needs using funds you are authorised to access.</li><li><b>Within 48 hours:</b> Check bills due in the next 30 days and automatic payments; contact the bank if access or payment is blocked.</li><li><b>This week:</b> Contact relevant insurers / pension providers about possible cover and claim deadlines; keep correspondence.</li><li><b>Until clarified:</b> Avoid rushed investment sales, pension withdrawals or refinancing. Ask the provider or an adviser before major changes.</li></ol>
+<div class="cm-legal"><b>Danish legal &amp; banking access — verify separately</b><p>□ Bank-specific fuldmagt: scope, validity during incapacity, and access to joint versus individual accounts; do not assume marriage grants access.<br>□ Fremtidsfuldmagt: financial scope, notarisation and activation procedure; confirm who can act and when.<br>□ Digital Fuldmagt for relevant public services, plus separate Digital Post reading / writing permissions.<br>□ Each provider's requirements for investments, pensions, insurance and both children's savings; review beneficiaries / will with an adviser. Use your own MitID, never someone else's.</p></div></section>
+<section><h3>5 · Missing information</h3><p>Not yet verified: provider names, authorised access, document locations, next bill deadlines and applicable insurance cover.</p><p>Next gap to close: ____________________ &nbsp; Responsible: spouse / me / both &nbsp; By: __________<br>Dry run: □ Spouse found documents, checked the next payment and located official contact routes. Review after provider or family changes.</p></section>
+<footer>Access guidance: <a href="https://www.borger.dk/samfund-og-rettigheder/fuldmagter/fremtidsfuldmagt">borger.dk · Fremtidsfuldmagt</a> · <a href="https://www.borger.dk/samfund-og-rettigheder/fuldmagter/guide--faa-fuldmagt-til-at-hjaelpe-en-anden?mode=guide&amp;skipAllQuestions=true">borger.dk · Fuldmagter</a> · <a href="https://www.mitid.dk/en-gb/help/help-universe/power-of-attorney-and-guardianship/?language=en-gb">MitID · authorised help</a><br>Planning checklist checked 14 October 2026 · This map records no access rights and replaces no legal arrangement.</footer>
+</article></section>
+
+<section id="memberView">
+<div class="card summary">
+<div>
+<h2 id="pageTitle"></h2>
+<div class="actions">
+<button class="primary" id="addBtn">+ Add item</button>
+<button id="renameBtn">Rename member</button>
+</div>
+</div>
+<div class="metrics">
+<div class="metric assets"><span>Assets</span><strong id="memberAssets">0 DKK</strong></div>
+<div class="metric liabilities"><span>Liabilities</span><strong id="memberLiabilities">0 DKK</strong></div>
+<div class="metric"><span>Net worth 2026</span><strong id="memberNet">0 DKK</strong></div>
+<div class="metric"><span>Monthly investing</span><strong id="memberMonthly">0 DKK</strong></div>
+<div class="metric forecast"><span id="memberForecastLabel">Forecast</span><strong id="memberForecast">0 DKK</strong></div>
+</div>
+</div>
+<div class="card table-card">
+<table>
+<thead><tr><th>Kind</th><th>Category</th><th>Description</th><th>Annual assumption</th><th class="amount">Monthly investment</th><th class="amount">2026 amount</th><th class="amount" id="forecastCol">Forecast</th><th></th></tr></thead>
+<tbody id="wealthRows"></tbody>
+</table>
+<div class="empty" id="emptyState">No items yet. Add the first asset or liability.</div>
+</div>
+</section>
+<section id="familyView" style="display:none">
+<div class="family-top">
+<div class="card family-summary">
+<h2>Total Family Wealth</h2>
+<div class="wealth-stack">
+<div class="metric"><span>Total family wealth · 2026</span><strong id="familyNet">0 DKK</strong></div>
+<div class="metric forecast"><span id="familyForecastLabel">Total family wealth · Forecast</span><strong id="familyForecast">0 DKK</strong></div>
+</div>
+<div class="submetrics" style="margin-top:12px">
+<div class="submetric">Assets 2026<strong id="familyAssets">0 DKK</strong></div>
+<div class="submetric">Liabilities 2026<strong id="familyLiabilities">0 DKK</strong></div>
+<div class="submetric">Monthly investing<strong id="familyMonthly">0 DKK</strong></div>
+</div>
+</div>
+<div class="card chart-card">
+<h3>Asset allocation comparison</h3>
+<div class="allocation-compare">
+<div class="allocation-box">
+<h4>2026</h4>
+<canvas height="220" id="allocationChartCurrent" width="420"></canvas>
+<div class="legend" id="legendCurrent"></div>
+</div>
+<div class="allocation-box">
+<h4 id="allocationForecastTitle">Forecast</h4>
+<canvas height="220" id="allocationChartForecast" width="420"></canvas>
+<div class="legend" id="legendForecast"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="card wealth-animation">
+<div class="animation-head">
+<div>
+<h3>Animated family wealth evolution</h3>
+<div class="subtitle">Watch net worth, assets, liabilities and asset allocation change year by year.</div>
+</div>
+<div class="animation-controls">
+<div class="field-mini">
+<label>From</label>
+<select id="animationStartYear"></select>
+</div>
+<div class="field-mini">
+<label>To</label>
+<select id="animationEndYear"></select>
+</div>
+<div class="field-mini">
+<label>Speed</label>
+<select id="animationSpeed">
+<option value="1400">Slow</option>
+<option selected="" value="800">Normal</option>
+<option value="350">Fast</option>
+</select>
+</div>
+<button class="primary" id="animationPlay">▶ Play</button>
+<button id="animationReset">Reset</button>
+</div>
+</div>
+<div class="animation-stage">
+<div class="animation-values">
+<div class="animation-value year"><span>Displayed year</span><strong id="animationYear">2026</strong></div>
+<div class="animation-value"><span>Family net worth</span><strong id="animationNet">0 DKK</strong></div>
+<div class="animation-value"><span>Total assets</span><strong id="animationAssets">0 DKK</strong></div>
+<div class="animation-value"><span>Total liabilities</span><strong id="animationLiabilities">0 DKK</strong></div>
+</div>
+<div class="animation-chart">
+<h4 id="animationAllocationTitle">Asset allocation · 2026</h4>
+<canvas height="250" id="animationAllocationChart" width="620"></canvas>
+<div class="legend" id="animationLegend"></div>
+</div>
+</div>
+<input class="animation-slider" id="animationSlider" max="2036" min="2026" step="1" type="range" value="2026"/>
+<div class="animation-progress"><div id="animationProgressBar"></div></div>
+</div>
+<div class="card forecast-panel">
+<div class="forecast-head">
+<div>
+<h3>Family wealth forecast</h3>
+<div class="subtitle">Compound each asset by its growth rate and reduce each liability by its annual repayment assumption.</div>
+</div>
+<div class="yearbox">
+<label>Forecast year</label>
+<select id="forecastYear"></select>
+</div>
+</div>
+<div class="forecast-grid">
+<div>
+<canvas height="260" id="projectionChart" width="620"></canvas>
+</div>
+<div>
+<table>
+<thead><tr><th>Member</th><th class="amount">2026 net</th><th class="amount" id="memberForecastYearHead">Forecast</th></tr></thead>
+<tbody id="forecastRows"></tbody>
+</table>
+</div>
+</div>
+<div class="assumption-note">
+      Forecasts are mathematical scenarios, not predictions. Each asset can include a monthly investment plus its annual growth assumption. Liabilities use the annual reduction assumption. Existing items default to 0 DKK/month unless you enter a contribution.
+    </div>
+</div>
+<div class="family-grid" id="familyGrid"></div>
+</section>
+<div class="small-note">
+  Save data exports one JSON backup containing all family members, entries and forecast assumptions. Load data restores a saved file. No automatic cloud sync is used.
+</div>
+</div>
+<div class="overlay" id="itemOverlay"><div class="modal">
+<h3 id="modalTitle">Add item</h3>
+<div class="grid2">
+<div class="field">
+<label>Kind</label>
+<select id="kindInput"><option value="asset">Asset</option><option value="liability">Liability / Debt</option></select>
+</div>
+<div class="field">
+<label>Category</label>
+<select id="categoryInput"></select>
+</div>
+</div>
+<div class="field">
+<label>Description</label>
+<input id="descInput" placeholder="Example: Nordnet ETF portfolio"/>
+</div>
+<div class="grid2">
+<div class="field">
+<label>Amount in 2026 (DKK)</label>
+<input id="amountInput" min="0" placeholder="100000" step="1" type="number"/>
+</div>
+<div class="field">
+<label id="rateLabel">Annual growth assumption (%)</label>
+<input id="rateInput" placeholder="5" step="0.1" type="number"/>
+</div>
+</div>
+<div class="field" id="monthlyField">
+<label>Monthly investment (DKK)</label>
+<input id="monthlyInput" min="0" placeholder="3000" step="1" type="number"/>
+</div>
+<div class="small-note" id="rateHelp">For an asset, 5 means its value grows by 5% per year. Negative rates are allowed for assets.</div>
+<div class="modal-actions">
+<button id="cancelItem">Cancel</button>
+<button class="primary" id="saveItem">Save</button>
+</div>
+</div></div>
+<div class="overlay" id="renameOverlay"><div class="modal">
+<h3>Rename family member</h3>
+<div class="field"><label>Name</label><input id="renameInput" placeholder="Name"/></div>
+<div class="modal-actions"><button id="cancelRename">Cancel</button><button class="primary" id="saveRename">Save</button></div>
+</div></div>
+<script>
+const $=id=>document.getElementById(id);
+const KEY='family_wealth_v3';
+const V2_KEY='family_wealth_v2';
+const V1_KEY='family_wealth_v1';
+const BASE_YEAR=2026;
+const ASSET_CATEGORIES=['Investments','Cash / Savings','Pension','Property',"Children's Savings",'Business','Other'];
+const LIABILITY_CATEGORIES=['Mortgage','Consumer Loan','Car Loan','Credit Card','Tax Liability','Other Debt'];
+let data=loadData(), currentTab=0, editingItemId=null, forecastYear=2036, animationTimer=null, animationPlaying=false, animationYear=BASE_YEAR;
+
+function defaultData(){return{version:3,baseYear:BASE_YEAR,members:[
+  {id:'m1',name:'Family Member 1',items:[]},{id:'m2',name:'Family Member 2',items:[]},
+  {id:'m3',name:'Family Member 3',items:[]},{id:'m4',name:'Family Member 4',items:[]}
+]}}
+
+function migrate(obj){
+  if(!obj||!Array.isArray(obj.members))return null;
+  return{version:3,baseYear:BASE_YEAR,members:obj.members.slice(0,4).map((m,i)=>({
+    id:m.id||('m'+(i+1)),name:m.name||('Family Member '+(i+1)),
+    items:(m.items||[]).map(x=>({
+      id:x.id||('i_'+Date.now()+'_'+Math.random().toString(16).slice(2)),
+      kind:x.kind==='liability'?'liability':'asset',
+      category:x.category||x.type||'Other',description:x.description||'',
+      amount:Math.max(0,Number(x.amount)||0),annualRate:Number.isFinite(Number(x.annualRate))?Number(x.annualRate):0,monthlyInvestment:Math.max(0,Number(x.monthlyInvestment)||0)
+    }))
+  }))};
+}
+function normalizeData(obj){
+  const x=migrate(obj);if(!x||x.members.length!==4)throw new Error('Backup must contain four family members.');return x;
+}
+function loadData(){
+  for(const key of [KEY,V2_KEY,V1_KEY]){
+    try{
+      const obj=JSON.parse(localStorage.getItem(key));
+      if(obj){const n=normalizeData(obj);localStorage.setItem(KEY,JSON.stringify(n));return n}
+    }catch{}
+  }
+  return defaultData();
+}
+function saveData(){localStorage.setItem(KEY,JSON.stringify(data))}
+function money(n){return new Intl.NumberFormat('da-DK',{style:'currency',currency:'DKK',maximumFractionDigits:0}).format(Number(n)||0)}
+function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function totalByKind(m,k){return m.items.filter(i=>i.kind===k).reduce((s,i)=>s+Number(i.amount||0),0)}
+function assetsOf(m){return totalByKind(m,'asset')} function liabilitiesOf(m){return totalByKind(m,'liability')} function netOf(m){return assetsOf(m)-liabilitiesOf(m)}
+function familyAssets(){return data.members.reduce((s,m)=>s+assetsOf(m),0)} function familyLiabilities(){return data.members.reduce((s,m)=>s+liabilitiesOf(m),0)} function familyNet(){return familyAssets()-familyLiabilities()}
+function monthlyOf(m){return m.items.filter(i=>i.kind==='asset').reduce((s,i)=>s+Number(i.monthlyInvestment||0),0)}
+function familyMonthly(){return data.members.reduce((s,m)=>s+monthlyOf(m),0)}
+function yearsTo(year){return Math.max(0,Number(year)-BASE_YEAR)}
+function projectedItem(item,year){
+  const years=yearsTo(year),rate=Number(item.annualRate)||0,base=Number(item.amount)||0;
+  if(item.kind==='asset'){
+    const months=years*12;
+    const monthly=Number(item.monthlyInvestment)||0;
+    const monthlyRate=rate/100/12;
+    const principal=base*Math.pow(1+monthlyRate,months);
+    const contributions=monthlyRate===0 ? monthly*months : monthly*((Math.pow(1+monthlyRate,months)-1)/monthlyRate);
+    return Math.max(0,principal+contributions);
+  }
+  return Math.max(0,base*Math.pow(Math.max(0,1-rate/100),years));
+}
+function projectedAssets(m,y){return m.items.filter(i=>i.kind==='asset').reduce((s,i)=>s+projectedItem(i,y),0)}
+function projectedLiabilities(m,y){return m.items.filter(i=>i.kind==='liability').reduce((s,i)=>s+projectedItem(i,y),0)}
+function projectedNet(m,y){return projectedAssets(m,y)-projectedLiabilities(m,y)}
+function familyProjectedNet(y){return data.members.reduce((s,m)=>s+projectedNet(m,y),0)}
+function familyProjectedAssets(y){return data.members.reduce((s,m)=>s+projectedAssets(m,y),0)}
+function familyProjectedLiabilities(y){return data.members.reduce((s,m)=>s+projectedLiabilities(m,y),0)}
+
+function assetCategoryTotals(){
+  const out={};data.members.forEach(m=>m.items.filter(i=>i.kind==='asset').forEach(i=>out[i.category]=(out[i.category]||0)+Number(i.amount||0)));return out;
+}
+function projectedAssetCategoryTotals(year){
+  const out={};
+  data.members.forEach(m=>m.items.filter(i=>i.kind==='asset').forEach(i=>{
+    out[i.category]=(out[i.category]||0)+projectedItem(i,year);
+  }));
+  return out;
+}
+
+function initYears(){
+  const sel=$('forecastYear');sel.innerHTML='';
+  for(let y=BASE_YEAR;y<=2056;y++){const o=document.createElement('option');o.value=y;o.textContent=y;sel.appendChild(o)}
+  forecastYear=Number(localStorage.getItem('family_wealth_forecast_year'))||2036;
+  if(forecastYear<BASE_YEAR||forecastYear>2056)forecastYear=2036;
+  sel.value=forecastYear;
+  const aStart=$('animationStartYear'),aEnd=$('animationEndYear');
+  if(aStart&&aEnd){
+    aStart.innerHTML='';aEnd.innerHTML='';
+    for(let y=BASE_YEAR;y<=2056;y++){
+      const o1=document.createElement('option');o1.value=y;o1.textContent=y;aStart.appendChild(o1);
+      const o2=document.createElement('option');o2.value=y;o2.textContent=y;aEnd.appendChild(o2);
+    }
+    aStart.value=BASE_YEAR;aEnd.value=forecastYear;
+    animationYear=BASE_YEAR;
+  }
+}
+
+function renderTabs(){
+  const box=$('tabs');box.innerHTML='';
+  data.members.forEach((m,i)=>{const b=document.createElement('button');b.className='tab'+(currentTab===i?' active':'');b.textContent=m.name;b.onclick=()=>{currentTab=i;render()};box.appendChild(b)});
+  const t=document.createElement('button');t.className='tab'+(currentTab===4?' active':'');t.textContent='Family Total';t.onclick=()=>{currentTab=4;render()};box.appendChild(t);
+  const c=document.createElement('button');c.className='tab'+(currentTab===5?' active':'');c.textContent='Family Financial Continuity Map';c.onclick=()=>{currentTab=5;render()};box.appendChild(c)
+}
+function render(){
+  renderTabs();
+  const continuityActive=currentTab===5;
+  document.body.classList.toggle('continuity-active',continuityActive);
+  $('continuityView').style.display=continuityActive?'block':'none';
+  if(continuityActive){stopAnimation();$('memberView').style.display='none';$('familyView').style.display='none';return}
+  $('forecastCol').textContent=forecastYear;
+  $('memberForecastLabel').textContent='Forecast '+forecastYear;
+  if(currentTab===4){$('memberView').style.display='none';$('familyView').style.display='block';renderFamily();return}
+  $('familyView').style.display='none';$('memberView').style.display='block';
+  const m=data.members[currentTab];
+  $('pageTitle').textContent=m.name;$('memberAssets').textContent=money(assetsOf(m));$('memberLiabilities').textContent=money(liabilitiesOf(m));$('memberNet').textContent=money(netOf(m));$('memberMonthly').textContent=money(monthlyOf(m));$('memberForecast').textContent=money(projectedNet(m,forecastYear));
+  const tbody=$('wealthRows');tbody.innerHTML='';
+  m.items.forEach(item=>{
+    const rateText=item.kind==='asset'
+      ? `${Number(item.annualRate||0).toFixed(1)}% growth`
+      : `${Number(item.annualRate||0).toFixed(1)}% decrease`;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><span class="badge ${item.kind==='liability'?'liability':'asset'}">${item.kind==='liability'?'Liability':'Asset'}</span></td>
+      <td><span class="badge category">${esc(item.category)}</span></td><td>${esc(item.description||'—')}</td>
+      <td>${esc(rateText)}</td><td class="amount">${item.kind==='asset'?money(item.monthlyInvestment||0):'—'}</td><td class="amount">${money(item.amount)}</td><td class="amount">${money(projectedItem(item,forecastYear))}</td>
+      <td class="tools"><button data-edit="${item.id}">Edit</button> <button data-delete="${item.id}">Delete</button></td>`;
+    tbody.appendChild(tr)
+  });
+  $('emptyState').style.display=m.items.length?'none':'block';
+  tbody.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openEdit(b.dataset.edit));
+  tbody.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>deleteItem(b.dataset.delete));
+}
+function renderFamily(){
+  $('familyAssets').textContent=money(familyAssets());$('familyLiabilities').textContent=money(familyLiabilities());$('familyNet').textContent=money(familyNet());$('familyMonthly').textContent=money(familyMonthly());
+  $('familyForecastLabel').textContent='Total family wealth · '+forecastYear;$('familyForecast').textContent=money(familyProjectedNet(forecastYear));
+  $('memberForecastYearHead').textContent=forecastYear;
+
+  const grid=$('familyGrid');grid.innerHTML='';
+  const rows=$('forecastRows');rows.innerHTML='';
+  data.members.forEach((m,i)=>{
+    const d=document.createElement('div');d.className='card family-card';
+    d.innerHTML=`<h3>${esc(m.name)}</h3><div class="wealth">${money(netOf(m))}</div>
+      <div class="submetrics"><div class="submetric">Assets<strong>${money(assetsOf(m))}</strong></div>
+      <div class="submetric">Liabilities<strong>${money(liabilitiesOf(m))}</strong></div>
+      <div class="submetric">Monthly investing<strong>${money(monthlyOf(m))}</strong></div>
+      <div class="submetric">Forecast ${forecastYear}<strong>${money(projectedNet(m,forecastYear))}</strong></div></div>`;
+    d.onclick=()=>{currentTab=i;render()};grid.appendChild(d);
+    const tr=document.createElement('tr');tr.innerHTML=`<td>${esc(m.name)}</td><td class="amount">${money(netOf(m))}</td><td class="amount">${money(projectedNet(m,forecastYear))}</td>`;rows.appendChild(tr);
+  });
+  drawAllocation();drawProjection();syncAnimationRange();renderAnimationFrame(animationYear);
+}
+function updateCategories(selected){
+  const cats=$('kindInput').value==='liability'?LIABILITY_CATEGORIES:ASSET_CATEGORIES;
+  $('categoryInput').innerHTML=cats.map(c=>`<option>${esc(c)}</option>`).join('');
+  if(selected&&cats.includes(selected))$('categoryInput').value=selected;
+  updateRateLabel();
+}
+function updateRateLabel(){
+  const liability=$('kindInput').value==='liability';
+  $('rateLabel').textContent=liability?'Annual liability decrease (%)':'Annual growth assumption (%)';
+  $('monthlyField').style.display=liability?'none':'block';
+  $('rateHelp').textContent=liability
+    ? 'For a liability, 3 means the remaining balance decreases by 3% each year in this simplified forecast.'
+    : 'For an asset, 5 means the value grows by 5% each year. Monthly investment is added every month and compounds at the same assumed return. Negative asset growth rates are allowed.';
+}
+function openAdd(){
+  editingItemId=null;$('modalTitle').textContent='Add item';$('kindInput').value='asset';updateCategories('Investments');
+  $('descInput').value='';$('amountInput').value='';$('rateInput').value='0';$('monthlyInput').value='0';$('itemOverlay').classList.add('show');
+}
+function openEdit(id){
+  const item=data.members[currentTab].items.find(i=>i.id===id);if(!item)return;
+  editingItemId=id;$('modalTitle').textContent='Edit item';$('kindInput').value=item.kind;updateCategories(item.category);
+  $('descInput').value=item.description||'';$('amountInput').value=item.amount;$('rateInput').value=Number(item.annualRate)||0;$('monthlyInput').value=Number(item.monthlyInvestment)||0;$('itemOverlay').classList.add('show');
+}
+function saveItem(){
+  const amount=Number($('amountInput').value),rate=Number($('rateInput').value);
+  if(!Number.isFinite(amount)||amount<0){alert('Enter a valid amount in DKK.');return}
+  if(!Number.isFinite(rate)){alert('Enter a valid annual percentage.');return}
+  if($('kindInput').value==='liability'&&(rate<0||rate>100)){alert('Liability decrease must be between 0% and 100%.');return}
+  if($('kindInput').value==='asset'&&rate<-100){alert('Asset growth cannot be below -100%.');return}
+  const monthly=$('kindInput').value==='asset'?Math.max(0,Number($('monthlyInput').value)||0):0;
+  const m=data.members[currentTab],payload={kind:$('kindInput').value,category:$('categoryInput').value,description:$('descInput').value.trim(),amount,annualRate:rate,monthlyInvestment:monthly};
+  if(editingItemId){const item=m.items.find(i=>i.id===editingItemId);if(item)Object.assign(item,payload)}
+  else m.items.push({id:'i_'+Date.now()+'_'+Math.random().toString(16).slice(2),...payload});
+  saveData();$('itemOverlay').classList.remove('show');render();
+}
+function deleteItem(id){if(!confirm('Delete this item?'))return;const m=data.members[currentTab];m.items=m.items.filter(i=>i.id!==id);saveData();render()}
+function openRename(){$('renameInput').value=data.members[currentTab].name;$('renameOverlay').classList.add('show')}
+function saveRename(){const name=$('renameInput').value.trim();if(!name)return;data.members[currentTab].name=name;saveData();$('renameOverlay').classList.remove('show');render()}
+
+function drawAllocationDonut(canvasId,legendId,totals,centerLabel){
+  const c=$(canvasId),ctx=c.getContext('2d'),entries=Object.entries(totals).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+  ctx.clearRect(0,0,c.width,c.height);$(legendId).innerHTML='';
+  if(!entries.length){ctx.fillStyle='#6b7886';ctx.font='15px sans-serif';ctx.textAlign='center';ctx.fillText('No asset data yet',c.width/2,c.height/2);return}
+  const colors=['#1f6feb','#198754','#f0a500','#8e6cef','#d95f59','#16a2a5','#7a8793'],total=entries.reduce((s,[,v])=>s+v,0),cx=120,cy=108,r=72,inner=38;
+  let start=-Math.PI/2;
+  entries.forEach(([name,val],i)=>{
+    const angle=2*Math.PI*val/total;ctx.beginPath();ctx.arc(cx,cy,r,start,start+angle);ctx.arc(cx,cy,inner,start+angle,start,true);ctx.closePath();ctx.fillStyle=colors[i%colors.length];ctx.fill();start+=angle;
+    const li=document.createElement('div');li.className='legend-item';li.innerHTML=`<span class="swatch" style="background:${colors[i%colors.length]}"></span><span>${esc(name)} · ${Math.round(100*val/total)}%</span>`;$(legendId).appendChild(li)
+  });
+  ctx.fillStyle='#17212b';ctx.font='700 13px sans-serif';ctx.textAlign='center';ctx.fillText(centerLabel,cx,cy-2);ctx.fillStyle='#6b7886';ctx.font='11px sans-serif';ctx.fillText(money(total),cx,cy+16)
+}
+function drawAllocation(){
+  $('allocationForecastTitle').textContent=String(forecastYear);
+  drawAllocationDonut('allocationChartCurrent','legendCurrent',assetCategoryTotals(),'2026');
+  drawAllocationDonut('allocationChartForecast','legendForecast',projectedAssetCategoryTotals(forecastYear),String(forecastYear));
+}
+function drawProjection(){
+  const c=$('projectionChart'),ctx=c.getContext('2d'),W=c.width,H=c.height,pad={l:62,r:18,t:20,b:36};
+  ctx.clearRect(0,0,W,H);
+  const years=[];for(let y=BASE_YEAR;y<=forecastYear;y++)years.push(y);
+  const vals=years.map(y=>familyProjectedNet(y)),min=Math.min(0,...vals),max=Math.max(1,...vals),range=max-min||1;
+  ctx.strokeStyle='#e3e8ee';ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){const y=pad.t+(H-pad.t-pad.b)*i/4;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke()}
+  ctx.fillStyle='#6b7886';ctx.font='11px sans-serif';ctx.textAlign='right';
+  for(let i=0;i<=4;i++){const value=max-range*i/4;const y=pad.t+(H-pad.t-pad.b)*i/4;ctx.fillText(new Intl.NumberFormat('da-DK',{notation:'compact',maximumFractionDigits:1}).format(value),pad.l-7,y+4)}
+  const xFor=i=>years.length===1?pad.l:(pad.l+(W-pad.l-pad.r)*i/(years.length-1));
+  const yFor=v=>pad.t+(H-pad.t-pad.b)*(max-v)/range;
+  ctx.beginPath();vals.forEach((v,i)=>{const x=xFor(i),y=yFor(v);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.strokeStyle='#7b5cff';ctx.lineWidth=3;ctx.stroke();
+  vals.forEach((v,i)=>{if(i===0||i===vals.length-1||years.length<=8){ctx.beginPath();ctx.arc(xFor(i),yFor(v),3.5,0,Math.PI*2);ctx.fillStyle='#7b5cff';ctx.fill()}});
+  ctx.textAlign='center';ctx.fillStyle='#6b7886';ctx.font='11px sans-serif';
+  const step=Math.max(1,Math.ceil(years.length/6));years.forEach((y,i)=>{if(i%step===0||i===years.length-1)ctx.fillText(y,xFor(i),H-12)});
+  ctx.textAlign='left';ctx.fillStyle='#17212b';ctx.font='700 12px sans-serif';ctx.fillText(`Family net worth projection: ${money(vals[vals.length-1])}`,pad.l,pad.t+4)
+}
+
+function syncAnimationRange(){
+  const startSel=$('animationStartYear'),endSel=$('animationEndYear'),slider=$('animationSlider');
+  if(!startSel||!endSel||!slider)return;
+  let start=Number(startSel.value)||BASE_YEAR;
+  let end=Number(endSel.value)||forecastYear;
+  if(end<start){end=start;endSel.value=end}
+  slider.min=start;slider.max=end;
+  if(animationYear<start||animationYear>end)animationYear=start;
+  slider.value=animationYear;
+}
+function renderAnimationFrame(year){
+  const y=Math.max(BASE_YEAR,Math.min(2056,Number(year)||BASE_YEAR));
+  animationYear=y;
+  const start=Number($('animationStartYear')?.value)||BASE_YEAR;
+  const end=Number($('animationEndYear')?.value)||forecastYear;
+  $('animationYear').textContent=y;
+  $('animationNet').textContent=money(familyProjectedNet(y));
+  $('animationAssets').textContent=money(familyProjectedAssets(y));
+  $('animationLiabilities').textContent=money(familyProjectedLiabilities(y));
+  $('animationAllocationTitle').textContent='Asset allocation · '+y;
+  drawAllocationDonut('animationAllocationChart','animationLegend',projectedAssetCategoryTotals(y),String(y));
+  if($('animationSlider'))$('animationSlider').value=y;
+  const denom=Math.max(1,end-start);
+  const pct=100*(y-start)/denom;
+  $('animationProgressBar').style.width=Math.max(0,Math.min(100,pct))+'%';
+}
+function stopAnimation(){
+  if(animationTimer){clearInterval(animationTimer);animationTimer=null}
+  animationPlaying=false;
+  if($('animationPlay'))$('animationPlay').textContent='▶ Play';
+}
+function playAnimation(){
+  if(animationPlaying){stopAnimation();return}
+  syncAnimationRange();
+  let start=Number($('animationStartYear').value),end=Number($('animationEndYear').value);
+  if(end<start){end=start;$('animationEndYear').value=end}
+  if(animationYear<start||animationYear>=end)animationYear=start;
+  renderAnimationFrame(animationYear);
+  animationPlaying=true;$('animationPlay').textContent='❚❚ Pause';
+  const delay=Number($('animationSpeed').value)||800;
+  animationTimer=setInterval(()=>{
+    if(animationYear>=end){stopAnimation();return}
+    animationYear+=1;renderAnimationFrame(animationYear);
+    if(animationYear>=end)stopAnimation();
+  },delay);
+}
+function resetAnimation(){
+  stopAnimation();
+  syncAnimationRange();
+  animationYear=Number($('animationStartYear').value)||BASE_YEAR;
+  renderAnimationFrame(animationYear);
+}
+
+function exportData(){
+  const payload={...data,forecastYear,exportedAt:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='family-wealth-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href)
+}
+function importData(file){
+  const reader=new FileReader();
+  reader.onload=()=>{try{
+    const parsed=JSON.parse(reader.result),normalized=normalizeData(parsed);
+    if(!confirm('Replace current Family Wealth data with this backup?'))return;
+    data=normalized;saveData();
+    if(parsed.forecastYear>=BASE_YEAR&&parsed.forecastYear<=2056){forecastYear=Number(parsed.forecastYear);$('forecastYear').value=forecastYear;localStorage.setItem('family_wealth_forecast_year',forecastYear)}
+    currentTab=0;render();alert('Backup loaded successfully.');
+  }catch(e){alert('Could not load this backup: '+e.message)}finally{$('fileInput').value=''}};
+  reader.readAsText(file)
+}
+
+$('printContinuity').onclick=()=>window.print();
+initYears();
+$('addBtn').onclick=openAdd;$('renameBtn').onclick=openRename;$('kindInput').onchange=()=>updateCategories();
+$('cancelItem').onclick=()=>$('itemOverlay').classList.remove('show');$('saveItem').onclick=saveItem;
+$('cancelRename').onclick=()=>$('renameOverlay').classList.remove('show');$('saveRename').onclick=saveRename;
+$('forecastYear').onchange=()=>{forecastYear=Number($('forecastYear').value);localStorage.setItem('family_wealth_forecast_year',forecastYear);if($('animationEndYear'))$('animationEndYear').value=forecastYear;render()};
+$('animationPlay').onclick=playAnimation;
+$('animationReset').onclick=resetAnimation;
+$('animationSlider').oninput=()=>{stopAnimation();animationYear=Number($('animationSlider').value);renderAnimationFrame(animationYear)};
+$('animationStartYear').onchange=()=>{stopAnimation();syncAnimationRange();animationYear=Number($('animationStartYear').value);renderAnimationFrame(animationYear)};
+$('animationEndYear').onchange=()=>{stopAnimation();syncAnimationRange();renderAnimationFrame(animationYear)};
+$('animationSpeed').onchange=()=>{if(animationPlaying){stopAnimation();playAnimation()}};
+$('exportBtn').onclick=exportData;$('importBtn').onclick=()=>$('fileInput').click();$('fileInput').onchange=e=>{const f=e.target.files&&e.target.files[0];if(f)importData(f)};
+$('itemOverlay').onclick=e=>{if(e.target===$('itemOverlay'))$('itemOverlay').classList.remove('show')};
+$('renameOverlay').onclick=e=>{if(e.target===$('renameOverlay'))$('renameOverlay').classList.remove('show')};
+if(location.hash==='#continuity')currentTab=5;
+render();
+</script>
+</body>
+</html>

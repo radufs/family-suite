@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Focus Console v3</title>
+<style>
+:root{
+  --bg:#071017;
+  --panel:#0d1720;
+  --panel2:#0a1219;
+  --text:#edf4fb;
+  --muted:#8fa0b4;
+  --line:#233446;
+  --accent:#66e6f3;
+  --accent2:#8bf0b0;
+  --warn:#f5c451;
+  --danger:#ff7b90;
+  --violet:#b89cff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
+body{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  background:
+    linear-gradient(rgba(102,230,243,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(102,230,243,.035) 1px,transparent 1px),
+    radial-gradient(circle at 15% 0%,rgba(102,230,243,.08),transparent 30%),
+    radial-gradient(circle at 100% 20%,rgba(184,156,255,.05),transparent 25%),
+    var(--bg);
+  background-size:28px 28px,28px 28px,auto,auto,auto;
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.wrap{max-width:1280px;margin:auto;padding:22px 16px 38px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.brand{font-size:13px;letter-spacing:.17em;color:var(--accent)}
+.badge{border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:11px;color:var(--muted)}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent2);margin-right:7px;box-shadow:0 0 8px var(--accent2)}
+.layout{display:grid;grid-template-columns:1.5fr .82fr;gap:14px}
+.card{
+  background:linear-gradient(180deg,rgba(13,23,32,.97),rgba(8,14,20,.97));
+  border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 40px rgba(0,0,0,.24)
+}
+.pad{padding:20px}
+.label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+input,select,textarea{
+  width:100%;background:#081119;border:1px solid var(--line);color:var(--text);
+  border-radius:9px;padding:10px 11px;outline:none
+}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:76px}
+.intentStrip{
+  display:grid;grid-template-columns:1.3fr .9fr .55fr;gap:9px;margin-bottom:15px
+}
+.intentBox{background:#09131b;border:1px solid #1f3041;border-radius:10px;padding:10px}
+.intentBox strong{display:block;font-size:12px;color:var(--text);font-weight:600}
+.intentBox span{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.timerHead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:16px}
+.mode{color:var(--accent2);font-size:13px;letter-spacing:.12em}
+.timer{
+  font-size:clamp(84px,13vw,155px);line-height:.95;letter-spacing:-.08em;
+  font-variant-numeric:tabular-nums;margin:18px 0 16px
+}
+.progress{height:9px;background:#071018;border:1px solid #172434;border-radius:999px;overflow:hidden}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s}
+.controls{display:grid;grid-template-columns:1.2fr repeat(3,1fr);gap:9px;margin-top:15px}
+button{
+  background:#101923;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:11px 12px
+}
+button:hover{border-color:#496176}
+.primary{background:linear-gradient(180deg,#12303b,#0d242d);border-color:#2d7282}
+.danger{color:#ffd4dc}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:16px}
+.stat{background:#09121a;border:1px solid #1c2a39;border-radius:10px;padding:11px}
+.stat strong{display:block;font-size:21px;color:var(--accent2)}
+.stat span{font-size:9px;color:var(--muted);letter-spacing:.09em;text-transform:uppercase}
+.targetWrap{margin-top:12px}
+.targetBar{height:8px;border:1px solid #1c2a39;background:#071018;border-radius:999px;overflow:hidden}
+.targetBar>div{height:100%;background:linear-gradient(90deg,var(--warn),var(--accent2));width:0}
+.tabs{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+.tab{padding:8px 10px;font-size:11px}
+.tab.active{border-color:var(--accent);color:var(--accent)}
+.panel{display:none}
+.panel.active{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.small{font-size:11px;color:var(--muted);line-height:1.5}
+.list{display:flex;flex-direction:column;gap:8px;max-height:310px;overflow:auto}
+.item{border:1px solid #1c2a39;background:#09121a;border-radius:9px;padding:9px 10px}
+.item .meta{font-size:10px;color:var(--muted);margin-top:4px}
+.distraction{display:grid;grid-template-columns:1fr auto;gap:8px}
+.insight{
+  border:1px solid #25394d;background:#0a141d;border-radius:10px;padding:12px;margin-bottom:9px
+}
+.insight b{color:var(--accent)}
+.scoreRow{display:flex;gap:5px;flex-wrap:wrap}
+.scoreBtn{padding:7px 9px;font-size:11px;min-width:34px}
+.scoreBtn.selected{border-color:var(--accent2);color:var(--accent2);background:#0d2418}
+canvas{width:100%;height:180px;display:block;background:#081018;border:1px solid #1c2a39;border-radius:10px}
+.hourGrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.hourCell{
+  min-height:48px;border:1px solid #1c2a39;background:#09121a;border-radius:8px;padding:6px;text-align:center
+}
+.hourCell strong{display:block;font-size:12px}
+.hourCell span{font-size:9px;color:var(--muted)}
+.footer{text-align:center;color:#5f6f82;font-size:10px;margin-top:13px}
+.fullscreen #sidebar,.fullscreen .intentStrip{display:none}
+.fullscreen .layout{grid-template-columns:1fr}
+.fullscreen .timer{font-size:clamp(120px,22vw,250px)}
+.fullscreen .mainCard{min-height:calc(100vh - 90px);display:flex;flex-direction:column;justify-content:center}
+.overlay{
+  position:fixed;inset:0;background:rgba(3,8,12,.82);display:none;align-items:center;justify-content:center;
+  z-index:100;padding:18px
+}
+.overlay.show{display:flex}
+.modal{
+  width:min(560px,100%);background:#0b151e;border:1px solid #2a4055;border-radius:16px;padding:20px;
+  box-shadow:0 20px 70px rgba(0,0,0,.5)
+}
+.modal h2{margin:0 0 6px;font-size:18px}
+.modal p{margin:0 0 15px;color:var(--muted);font-size:11px;line-height:1.5}
+.modalActions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+.note{color:var(--warn)}
+@media(max-width:950px){
+  .layout{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .intentStrip{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .controls{grid-template-columns:1fr 1fr}
+  .grid2{grid-template-columns:1fr}
+  .timer{font-size:76px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .hourGrid{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+<style id="familyHubNavStyle">
+.family-hub-nav{max-width:1280px;margin:14px auto 0;padding:0 16px;display:flex;gap:8px;flex-wrap:wrap}
+.family-hub-nav a{text-decoration:none;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:13px;font-weight:700;padding:9px 13px;border-radius:10px;border:1px solid rgba(120,140,160,.35);background:rgba(255,255,255,.92);color:#203040;box-shadow:0 4px 14px rgba(20,30,50,.05)}
+.family-hub-nav a:hover{filter:brightness(.98)}
+.family-hub-nav a.active{background:#1f6feb;border-color:#1f6feb;color:#fff}
+</style>
+<style id="suiteNavCSS">.suite-nav{max-width:1280px;margin:14px auto 0;padding:0 18px;display:flex;gap:8px;flex-wrap:wrap}.suite-nav a{text-decoration:none;font-family:Inter,system-ui,sans-serif;font-size:13px;font-weight:700;padding:9px 13px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;color:#334155}.suite-nav a:hover{filter:brightness(.98)}.suite-nav a.active{background:#2563eb;border-color:#2563eb;color:#fff}</style><style id="neonPunkOverride">:root{--bg:#05050a!important;--panel:#0d0d18!important;--text:#f5f7ff!important;--muted:#98a0b8!important;--line:#29294a!important;--accent:#00f7ff!important;--accent2:#c6ff00!important;--warn:#ffb000!important;--danger:#ff3b81!important}body{background:linear-gradient(rgba(0,247,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,43,214,.04) 1px,transparent 1px),radial-gradient(circle at 15% 0%,rgba(0,247,255,.13),transparent 30%),radial-gradient(circle at 100% 12%,rgba(255,43,214,.1),transparent 28%),#05050a!important;background-size:28px 28px,28px 28px,auto,auto,auto!important}.brand{color:#00f7ff!important;text-shadow:0 0 12px #00f7ff}.card{border-color:#29294a!important;box-shadow:0 0 0 1px rgba(0,247,255,.03),0 14px 44px rgba(0,0,0,.45)!important}.timer{text-shadow:0 0 12px #fff3,0 0 32px #00f7ff!important}.mode{color:#ff2bd6!important;text-shadow:0 0 12px #ff2bd6}.progress>div{background:linear-gradient(90deg,#00f7ff,#ff2bd6,#c6ff00)!important}.primary{background:#00f7ff!important;color:#05050a!important;border-color:#00f7ff!important;box-shadow:0 0 18px rgba(0,247,255,.4)!important}.stat strong{color:#c6ff00!important}.suite-nav a{background:#0b0b14;color:#d7dcff;border-color:#333355}.suite-nav a.active{background:#00f7ff;color:#05050a;border-color:#00f7ff;box-shadow:0 0 18px #00f7ff}</style><style>
+/* Family Suite v13 categorized navigation */
+.suite-menu-bar{position:relative;z-index:10000;display:flex;align-items:center;gap:12px;padding:10px 14px;margin:0 0 12px;border:1px solid rgba(148,163,184,.22);border-radius:14px;background:rgba(15,23,42,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 8px 24px rgba(0,0,0,.12);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#e5e7eb}
+.suite-menu-bar a{text-decoration:none}
+.suite-menu{position:relative}
+.suite-menu>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;font-size:14px;font-weight:800;letter-spacing:.01em;color:#f8fafc;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);user-select:none}
+.suite-menu>summary::-webkit-details-marker{display:none}
+.suite-menu>summary:hover{background:rgba(255,255,255,.12)}
+.suite-menu[open]>summary{background:rgba(56,189,248,.14);border-color:rgba(56,189,248,.30)}
+.suite-menu-current{font-size:12px;font-weight:700;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.suite-menu-panel{position:absolute;top:calc(100% + 8px);left:0;width:min(340px,calc(100vw - 28px));max-height:76vh;overflow:auto;padding:10px;border-radius:14px;background:#0f172a;border:1px solid rgba(148,163,184,.28);box-shadow:0 24px 55px rgba(0,0,0,.32)}
+.suite-menu-category{padding:8px 6px 10px;border-bottom:1px solid rgba(148,163,184,.14)}
+.suite-menu-category:last-child{border-bottom:0}
+.suite-menu-category-title{padding:0 8px 5px;font-size:10px;line-height:1.2;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#64748b}
+.suite-menu-link{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 9px;border-radius:9px;color:#dbeafe;font-size:13px;font-weight:650}
+.suite-menu-link:hover{background:rgba(148,163,184,.12);color:#fff}
+.suite-menu-link.active{background:rgba(56,189,248,.16);color:#7dd3fc}
+.suite-menu-link.active::after{content:"Current";font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#38bdf8}
+@media (max-width:640px){.suite-menu-bar{margin-bottom:10px;border-radius:12px}.suite-menu-current{display:none}.suite-menu-panel{max-height:72vh}}
+</style><style>.suite-menu{border:0;background:transparent;padding:0;margin:0}.suite-menu>summary{line-height:1.3}</style></head>
+<body><nav aria-label="Family Suite navigation" class="suite-menu-bar"><details class="suite-menu"><summary><span aria-hidden="true">☰</span><span>Family Suite</span><span aria-hidden="true">▾</span></summary><div class="suite-menu-panel"><div class="suite-menu-category"><div class="suite-menu-category-title">Start</div><a class="suite-menu-link" href="new_tab.html">New Tab</a><a class="suite-menu-link" href="family_hub.html">Family Hub</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Family</div><a class="suite-menu-link" href="family_week.html">Family Week</a><a class="suite-menu-link" href="maintenance.html">Maintenance</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Finances</div><a class="suite-menu-link" href="family_wealth.html">Family Wealth</a><a class="suite-menu-link" href="investment_rules.html">Investment Rules</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Learning</div><a class="suite-menu-link" href="danish_lesson.html">Danish Lesson Lab</a><a class="suite-menu-link" href="Learn_Danish_v2_2026-10-14.xlsx">Danish workbook</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Health &amp; Performance</div><a class="suite-menu-link" href="longevity_hacks.html">Longevity Hacks</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Personal Systems</div><a aria-current="page" class="suite-menu-link active" href="focus_console.html">Focus Console</a><a class="suite-menu-link" href="decision_journal.html">Decision Journal</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">AI &amp; Projects</div><a class="suite-menu-link" href="radu_context.html">Radu Context</a><a class="suite-menu-link" href="project_portfolio.html">Project Portfolio</a></div></div></details><span class="suite-menu-current">Personal Systems · Focus Console</span></nav>
+<div class="wrap" id="appWrap">
+<div class="top">
+<div class="brand">FOCUS CONSOLE // v3.0</div>
+<div class="badge"><span class="dot"></span><span id="clock">SYSTEM READY</span></div>
+</div>
+<div class="intentStrip">
+<div class="intentBox"><span>Today's priority</span><strong id="intentPriority">Not set</strong></div>
+<div class="intentBox"><span>Avoid today</span><strong id="intentAvoid">Not set</strong></div>
+<div class="intentBox"><span>Target</span><strong id="intentTarget">100 min</strong></div>
+</div>
+<div class="layout">
+<section class="card pad mainCard">
+<div class="label">Current objective</div>
+<input id="task" placeholder="What are you working on right now?" type="text"/>
+<div class="timerHead">
+<div>
+<div class="label">Cycle state</div>
+<div class="mode" id="mode">FOCUS</div>
+</div>
+<div class="small" id="roundLabel">ROUND 1</div>
+</div>
+<div class="timer" id="timer">50:00</div>
+<div class="progress"><div id="progressFill"></div></div>
+<div class="controls">
+<button class="primary" id="startBtn">START</button>
+<button id="resetBtn">RESET</button>
+<button id="skipBtn">STOP / SKIP</button>
+<button id="fullBtn">FULL SCREEN</button>
+</div>
+<div class="stats">
+<div class="stat"><strong id="rounds">0</strong><span>focus rounds</span></div>
+<div class="stat"><strong id="focusMin">0</strong><span>focus min</span></div>
+<div class="stat"><strong id="distractCount">0</strong><span>distractions</span></div>
+<div class="stat"><strong id="qualityAvg">–</strong><span>avg quality</span></div>
+<div class="stat"><strong id="targetPct">0%</strong><span>daily target</span></div>
+</div>
+<div class="targetWrap">
+<div class="label">Daily target progress</div>
+<div class="targetBar"><div id="targetFill"></div></div>
+</div>
+</section>
+<aside class="card pad" id="sidebar">
+<div class="tabs">
+<button class="tab active" data-tab="session">SESSION</button>
+<button class="tab" data-tab="lab">LAB</button>
+<button class="tab" data-tab="history">HISTORY</button>
+<button class="tab" data-tab="settings">SETTINGS</button>
+</div>
+<div class="panel active" id="session">
+<div class="label">Capture distraction</div>
+<div class="distraction">
+<input id="distractionInput" placeholder="Write it down, return to focus" type="text"/>
+<button id="addDistraction">LOG</button>
+</div>
+<div style="height:14px"></div>
+<div class="label">Today's notes</div>
+<textarea id="notes" placeholder="Quick notes, decisions, follow-ups..."></textarea>
+<div style="height:14px"></div>
+<div class="label">Today's summary</div>
+<div class="small" id="todaySummary">No completed focus rounds yet.</div>
+<div style="height:14px"></div>
+<div class="label">Recent distractions</div>
+<div class="list" id="distractionList"></div>
+</div>
+<div class="panel" id="lab">
+<div class="label">Automatic daily debrief</div>
+<div id="debrief"></div>
+<div style="height:14px"></div>
+<div class="label">Best focus hours</div>
+<div class="hourGrid" id="hourGrid"></div>
+</div>
+<div class="panel" id="history">
+<div class="label">Last 7 days · focus minutes</div>
+<canvas height="180" id="chart" width="700"></canvas>
+<div style="height:14px"></div>
+<div class="label">Session log</div>
+<div class="list" id="sessionList"></div>
+<div style="height:10px"></div>
+<button id="exportBtn" style="width:100%">EXPORT CSV</button>
+</div>
+<div class="panel" id="settings">
+<button id="intentBtn" style="width:100%;margin-bottom:12px">SET / EDIT MORNING INTENTION</button>
+<div class="grid2">
+<div><div class="small">Focus min</div><input id="focusInput" max="180" min="1" type="number"/></div>
+<div><div class="small">Break min</div><input id="breakInput" max="60" min="1" type="number"/></div>
+<div><div class="small">Movement min</div><input id="moveInput" max="30" min="1" type="number"/></div>
+<div><div class="small">Breathing min</div><input id="breathInput" max="30" min="1" type="number"/></div>
+<div><div class="small">Focus rounds before movement</div><input id="moveEvery" max="12" min="1" type="number"/></div>
+<div><div class="small">Daily focus target (min)</div><input id="dailyTarget" max="1000" min="10" type="number"/></div>
+</div>
+<div style="height:14px"></div>
+<div class="label">Cycle behavior</div>
+<select id="recoveryMode">
+<option value="break">Standard: focus → short break</option>
+<option value="breath">Mindful: focus → breathing</option>
+<option value="alternate">Alternate: break / breathing</option>
+</select>
+<div style="height:14px"></div>
+<button id="soundBtn" style="width:100%">SOUND: ON</button>
+<div style="height:8px"></div>
+<button class="danger" id="clearBtn" style="width:100%">CLEAR LOCAL DATA</button>
+<div style="height:14px"></div>
+<div class="small">
+          All data stays in this browser using localStorage. No account, cloud database, analytics, or external service is used.
+        </div>
+</div>
+</aside>
+</div>
+<div class="footer">ATTENTION LAB · LOCAL-FIRST · OBSERVE BEFORE YOU OPTIMIZE</div>
+</div>
+<div class="overlay" id="intentOverlay">
+<div class="modal">
+<h2>Morning intention</h2>
+<p>Define the day before the day defines itself.</p>
+<div class="label">Most important outcome</div>
+<input id="morningPriority" placeholder="What would make today successful?"/>
+<div style="height:10px"></div>
+<div class="label">What do you want to avoid?</div>
+<input id="morningAvoid" placeholder="Example: reactive email checking"/>
+<div style="height:10px"></div>
+<div class="label">Energy right now · 1 low → 5 high</div>
+<div class="scoreRow" id="energyButtons"></div><p class="small"><b>Today’s longevity idea:</b> <span data-daily-longevity></span> <a data-daily-longevity-source href="https://www.nia.nih.gov/health/healthy-aging/what-do-we-know-about-healthy-aging">Source</a> <a href="longevity_hacks.html">Explore</a></p>
+<div class="modalActions">
+<button id="intentLater">LATER</button>
+<button class="primary" id="saveIntent">SAVE INTENTION</button>
+</div>
+</div>
+</div>
+<div class="overlay" id="reviewOverlay">
+<div class="modal">
+<h2>Session review</h2>
+<p>Ten seconds of reflection turns the timer into data about how you actually work.</p>
+<div class="label">Focus quality · 1 poor → 5 excellent</div>
+<div class="scoreRow" id="qualityButtons"></div>
+<div style="height:12px"></div>
+<div class="label">Energy after session · 1 drained → 5 strong</div>
+<div class="scoreRow" id="afterEnergyButtons"></div>
+<div style="height:12px"></div>
+<div class="label">Optional note</div>
+<input id="reviewNote" placeholder="What helped or hurt?"/>
+<div class="modalActions">
+<button id="skipReview">SKIP</button>
+<button class="primary" id="saveReview">SAVE</button>
+</div>
+</div>
+</div>
+<div class="overlay" id="stopOverlay">
+<div class="modal">
+<h2>Why did this focus block stop?</h2>
+<p>This is not a failure log. It is a friction map.</p>
+<select id="stopReason">
+<option value="completed-early">Task finished early</option>
+<option value="external-interruption">External interruption</option>
+<option value="self-distraction">Self-distraction</option>
+<option value="low-energy">Low energy</option>
+<option value="unclear-task">Task was unclear</option>
+<option value="technical-problem">Technical problem</option>
+<option value="other">Other</option>
+</select>
+<div style="height:10px"></div>
+<input id="stopNote" placeholder="Optional detail"/>
+<div class="modalActions">
+<button id="cancelStop">CANCEL</button>
+<button class="primary" id="confirmStop">LOG &amp; SKIP</button>
+</div>
+</div>
+</div>
+<script src="daily_longevity.js"></script><script>
+const $ = id => document.getElementById(id);
+const LS = key => 'fc3_' + key;
+
+const defaults = {
+  focus:50, break:10, move:5, breath:3, moveEvery:3, dailyTarget:100,
+  recoveryMode:'alternate', sound:true
+};
+
+let state = {
+  mode:'focus', running:false, remaining:0, total:0, interval:null,
+  roundsToday:0, focusMinToday:0, distractionsToday:[], notes:'',
+  recoveryToggle:false, currentSessionStart:null, pendingReview:null,
+  morningEnergy:null
+};
+
+function todayKey(d=new Date()){
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function getJSON(key,fallback){
+  try{return JSON.parse(localStorage.getItem(LS(key))) ?? fallback}catch{return fallback}
+}
+function setJSON(key,val){localStorage.setItem(LS(key),JSON.stringify(val))}
+function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
+function escapeHtml(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+
+function loadSettings(){
+  const map={focus:'focusInput',break:'breakInput',move:'moveInput',breath:'breathInput',moveEvery:'moveEvery',dailyTarget:'dailyTarget'};
+  for(const [k,id] of Object.entries(map)) $(id).value=localStorage.getItem(LS(k))||defaults[k];
+  $('recoveryMode').value=localStorage.getItem(LS('recoveryMode'))||defaults.recoveryMode;
+  const snd=localStorage.getItem(LS('sound')); defaults.sound=snd===null?true:snd==='true';
+}
+function saveSettings(){
+  const map={focus:'focusInput',break:'breakInput',move:'moveInput',breath:'breathInput',moveEvery:'moveEvery',dailyTarget:'dailyTarget'};
+  for(const [k,id] of Object.entries(map)) localStorage.setItem(LS(k),$(id).value);
+  localStorage.setItem(LS('recoveryMode'),$('recoveryMode').value);
+  localStorage.setItem(LS('sound'),String(defaults.sound));
+  localStorage.setItem(LS('task'),$('task').value);
+  localStorage.setItem(LS('notes'),$('notes').value);
+}
+function archiveDay(day){
+  if(!day||!day.date)return;
+  let hist=getJSON('history',[]);
+  const rec={date:day.date,focusMin:day.focusMin||0,rounds:day.rounds||0,distractions:(day.distractions||[]).length};
+  const i=hist.findIndex(x=>x.date===day.date); if(i>=0)hist[i]=rec;else hist.push(rec);
+  setJSON('history',hist.slice(-90));
+}
+function loadDay(){
+  const key=todayKey();
+  const day=getJSON('day',{date:key,rounds:0,focusMin:0,distractions:[],notes:''});
+  if(day.date!==key){
+    archiveDay(day);
+    setJSON('day',{date:key,rounds:0,focusMin:0,distractions:[],notes:''});
+  } else {
+    state.roundsToday=day.rounds||0; state.focusMinToday=day.focusMin||0;
+    state.distractionsToday=day.distractions||[]; state.notes=day.notes||'';
+  }
+}
+function saveDay(){
+  const day={date:todayKey(),rounds:state.roundsToday,focusMin:state.focusMinToday,distractions:state.distractionsToday,notes:$('notes').value};
+  setJSON('day',day); archiveDay(day);
+}
+function durationFor(mode){
+  return 60*Number(({focus:$('focusInput').value,break:$('breakInput').value,move:$('moveInput').value,breath:$('breathInput').value})[mode]||1);
+}
+function modeLabel(mode){return ({focus:'FOCUS',break:'BREAK',move:'MOVE',breath:'BREATHE'})[mode]||mode.toUpperCase()}
+function fmt(sec){
+  sec=Math.max(0,Math.round(sec)); const m=Math.floor(sec/60),s=sec%60;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+function resetTimer(){
+  state.running=false; clearInterval(state.interval); state.currentSessionStart=null;
+  state.total=durationFor(state.mode); state.remaining=state.total;
+  $('startBtn').textContent='START'; render();
+}
+function beep(freq=660,dur=.45){
+  if(!defaults.sound)return;
+  try{
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=freq;
+    g.gain.setValueAtTime(.0001,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.18,ctx.currentTime+.03);
+    g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+dur);o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+dur+.03);
+  }catch(e){}
+}
+function nextAfterFocus(){
+  if(state.roundsToday>0 && state.roundsToday%Number($('moveEvery').value)===0)return'move';
+  const mode=$('recoveryMode').value;
+  if(mode==='breath')return'breath';
+  if(mode==='alternate'){state.recoveryToggle=!state.recoveryToggle;return state.recoveryToggle?'break':'breath'}
+  return'break';
+}
+function sessionList(){return getJSON('sessions',[])}
+function saveSessions(s){setJSON('sessions',s.slice(0,250))}
+function logSession(data){
+  const s=sessionList();s.unshift(data);saveSessions(s);
+}
+function beginIfNeeded(){
+  if(!state.currentSessionStart)state.currentSessionStart=new Date().toISOString();
+}
+function completeMode(){
+  beep(state.mode==='focus'?720:560,.55);
+  const minutes=Math.round(state.total/60), ended=new Date();
+  if(state.mode==='focus'){
+    state.roundsToday++; state.focusMinToday+=minutes;
+    state.pendingReview={
+      ts:ended.toISOString(),startTs:state.currentSessionStart||new Date(ended.getTime()-state.total*1000).toISOString(),
+      type:'focus',minutes,task:$('task').value.trim()||'',completed:true,quality:null,energyAfter:null,note:'',stopReason:''
+    };
+    saveDay(); state.mode=nextAfterFocus(); resetTimer(); openReview();
+  }else{
+    logSession({ts:ended.toISOString(),startTs:state.currentSessionStart||'',type:state.mode,minutes,task:$('task').value.trim()||'',completed:true});
+    state.mode='focus'; resetTimer();
+  }
+  renderHistory();
+}
+function tick(){state.remaining--;if(state.remaining<=0){completeMode();return}render()}
+function toggle(){
+  if(state.running){
+    state.running=false;clearInterval(state.interval);$('startBtn').textContent='START';
+  }else{
+    beginIfNeeded();state.running=true;$('startBtn').textContent='PAUSE';state.interval=setInterval(tick,1000);
+  }
+}
+function requestSkip(){
+  if(state.mode==='focus' && (state.total-state.remaining)>20){
+    clearInterval(state.interval);state.running=false;$('startBtn').textContent='START';$('stopOverlay').classList.add('show');
+  }else skipCurrent('manual-skip','');
+}
+function skipCurrent(reason,note){
+  const elapsed=Math.max(0,Math.round((state.total-state.remaining)/60));
+  logSession({
+    ts:new Date().toISOString(),startTs:state.currentSessionStart||'',type:state.mode,
+    minutes:elapsed,task:$('task').value.trim()||'',completed:false,stopReason:reason||'manual-skip',note:note||''
+  });
+  state.mode=state.mode==='focus'?nextAfterFocus():'focus';resetTimer();renderHistory();
+}
+function addDistraction(){
+  const text=$('distractionInput').value.trim();if(!text)return;
+  state.distractionsToday.unshift({text,ts:new Date().toISOString(),task:$('task').value.trim()||''});
+  $('distractionInput').value='';saveDay();render();
+}
+function openReview(){
+  state.reviewQuality=null;state.reviewEnergy=null;$('reviewNote').value='';
+  selectScore('qualityButtons',null);selectScore('afterEnergyButtons',null);
+  $('reviewOverlay').classList.add('show');
+}
+function selectScore(containerId,val){
+  document.querySelectorAll('#'+containerId+' .scoreBtn').forEach(b=>b.classList.toggle('selected',Number(b.dataset.value)===Number(val)));
+}
+function saveReview(){
+  if(state.pendingReview){
+    state.pendingReview.quality=state.reviewQuality||null;
+    state.pendingReview.energyAfter=state.reviewEnergy||null;
+    state.pendingReview.note=$('reviewNote').value.trim();
+    logSession(state.pendingReview);state.pendingReview=null;
+  }
+  $('reviewOverlay').classList.remove('show');render();renderHistory();
+}
+function skipReview(){
+  if(state.pendingReview){logSession(state.pendingReview);state.pendingReview=null}
+  $('reviewOverlay').classList.remove('show');render();renderHistory();
+}
+function renderDistractions(){
+  const box=$('distractionList');box.innerHTML='';
+  if(!state.distractionsToday.length){box.innerHTML='<div class="small">Nothing logged. Good sign.</div>';return}
+  state.distractionsToday.slice(0,8).forEach(d=>{
+    const t=new Date(d.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    const el=document.createElement('div');el.className='item';
+    el.innerHTML=`<div>${escapeHtml(d.text)}</div><div class="meta">${t}${d.task?' · '+escapeHtml(d.task):''}</div>`;
+    box.appendChild(el);
+  });
+}
+function focusSessions(){return sessionList().filter(s=>s.type==='focus')}
+function avgQualityToday(){
+  const arr=focusSessions().filter(s=>s.ts?.startsWith(todayKey())).map(s=>Number(s.quality)).filter(Boolean);
+  return arr.length?(arr.reduce((a,b)=>a+b,0)/arr.length):null;
+}
+function render(){
+  $('timer').textContent=fmt(state.remaining);$('mode').textContent=modeLabel(state.mode);
+  $('roundLabel').textContent=`ROUND ${state.roundsToday+1}`;$('rounds').textContent=state.roundsToday;
+  $('focusMin').textContent=state.focusMinToday;$('distractCount').textContent=state.distractionsToday.length;
+  const q=avgQualityToday();$('qualityAvg').textContent=q?q.toFixed(1):'–';
+  const target=Number($('dailyTarget').value)||100,pct=clamp(Math.round(100*state.focusMinToday/target),0,100);
+  $('targetPct').textContent=pct+'%';$('targetFill').style.width=pct+'%';
+  $('progressFill').style.width=(state.total?100*(1-state.remaining/state.total):0)+'%';
+  $('todaySummary').textContent=state.roundsToday
+    ? `${state.roundsToday} round${state.roundsToday===1?'':'s'} · ${state.focusMinToday} focus minutes · ${state.distractionsToday.length} distraction${state.distractionsToday.length===1?'':'s'}${q?' · quality '+q.toFixed(1)+'/5':''}.`
+    :'No completed focus rounds yet.';
+  $('soundBtn').textContent='SOUND: '+(defaults.sound?'ON':'OFF');
+  document.title=`${fmt(state.remaining)} · ${modeLabel(state.mode)}`;
+  renderDistractions();renderIntentSummary();renderDebrief();
+}
+function renderIntentSummary(){
+  const intent=getJSON('intent',{date:'',priority:'',avoid:'',energy:null});
+  $('intentPriority').textContent=intent.date===todayKey()&&intent.priority?intent.priority:'Not set';
+  $('intentAvoid').textContent=intent.date===todayKey()&&intent.avoid?intent.avoid:'Not set';
+  $('intentTarget').textContent=($('dailyTarget').value||100)+' min';
+}
+function openIntent(){
+  refreshLongevityIdea();
+  const intent=getJSON('intent',{date:'',priority:'',avoid:'',energy:null});
+  $('morningPriority').value=intent.date===todayKey()?intent.priority||'':'';
+  $('morningAvoid').value=intent.date===todayKey()?intent.avoid||'':'';
+  state.morningEnergy=intent.date===todayKey()?intent.energy:null;selectScore('energyButtons',state.morningEnergy);
+  $('intentOverlay').classList.add('show');
+}
+function saveIntent(){
+  setJSON('intent',{date:todayKey(),priority:$('morningPriority').value.trim(),avoid:$('morningAvoid').value.trim(),energy:state.morningEnergy||null});
+  $('intentOverlay').classList.remove('show');renderIntentSummary();renderDebrief();
+}
+function renderHistory(){
+  const sessions=sessionList(),box=$('sessionList');box.innerHTML='';
+  if(!sessions.length)box.innerHTML='<div class="small">No sessions recorded yet.</div>';
+  sessions.slice(0,14).forEach(s=>{
+    const d=new Date(s.ts),quality=s.quality?` · Q${s.quality}/5`:'',stop=!s.completed&&s.stopReason?` · ${escapeHtml(s.stopReason)}`:'';
+    const el=document.createElement('div');el.className='item';
+    el.innerHTML=`<div>${escapeHtml((s.type||'').toUpperCase())} · ${s.minutes} min${quality}</div>
+      <div class="meta">${d.toLocaleString()}${s.task?' · '+escapeHtml(s.task):''}${stop}</div>`;
+    box.appendChild(el);
+  });
+  drawChart();renderDebrief();
+}
+function drawChart(){
+  archiveDay({date:todayKey(),rounds:state.roundsToday,focusMin:state.focusMinToday,distractions:state.distractionsToday});
+  const hist=getJSON('history',[]),days=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);const key=todayKey(d);
+    days.push(hist.find(x=>x.date===key)||{date:key,focusMin:0});
+  }
+  const c=$('chart'),ctx=c.getContext('2d'),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);
+  const pad=26,max=Math.max(60,...days.map(x=>x.focusMin));
+  ctx.strokeStyle='#203142';ctx.lineWidth=1;
+  for(let i=0;i<4;i++){const y=pad+(h-2*pad)*i/3;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(w-pad,y);ctx.stroke()}
+  const bw=(w-2*pad)/days.length*.62;
+  days.forEach((d,i)=>{
+    const x=pad+(w-2*pad)*(i+.5)/days.length,bh=(h-2*pad)*(d.focusMin/max);
+    ctx.fillStyle='#66e6f3';ctx.fillRect(x-bw/2,h-pad-bh,bw,bh);
+    ctx.fillStyle='#8fa0b4';ctx.font='11px monospace';ctx.textAlign='center';
+    ctx.fillText(new Date(d.date+'T00:00:00').toLocaleDateString([],{weekday:'short'}),x,h-8);
+    if(d.focusMin>0){ctx.fillStyle='#edf4fb';ctx.fillText(String(d.focusMin),x,h-pad-bh-5)}
+  });
+}
+function renderDebrief(){
+  const box=$('debrief');if(!box)return;
+  const today=focusSessions().filter(s=>s.ts?.startsWith(todayKey()));
+  const completed=today.filter(s=>s.completed),q=completed.map(s=>Number(s.quality)).filter(Boolean);
+  const avgQ=q.length?q.reduce((a,b)=>a+b,0)/q.length:null;
+  const stopped=today.filter(s=>!s.completed);
+  const reasons={};stopped.forEach(s=>{if(s.stopReason)reasons[s.stopReason]=(reasons[s.stopReason]||0)+1});
+  const topReason=Object.entries(reasons).sort((a,b)=>b[1]-a[1])[0];
+  const target=Number($('dailyTarget').value)||100;
+  let cards=[];
+  cards.push(`<div class="insight"><b>Output:</b> ${state.focusMinToday} of ${target} target minutes (${Math.round(100*state.focusMinToday/target)}%).</div>`);
+  cards.push(`<div class="insight"><b>Attention quality:</b> ${avgQ?avgQ.toFixed(1)+'/5 across '+q.length+' rated session'+(q.length===1?'':'s'):'not enough ratings yet'}.</div>`);
+  cards.push(`<div class="insight"><b>Friction:</b> ${state.distractionsToday.length} distraction${state.distractionsToday.length===1?'':'s'} logged${topReason?' · most common stop reason: '+escapeHtml(topReason[0]):''}.</div>`);
+  const best=bestHour();
+  cards.push(`<div class="insight"><b>Pattern:</b> ${best?`your strongest observed hour is around ${String(best.hour).padStart(2,'0')}:00 (avg quality ${best.q.toFixed(1)}/5).`:'rate more completed sessions to identify your best focus window.'}</div>`);
+  box.innerHTML=cards.join('');
+  renderHourGrid();
+}
+function bestHour(){
+  const groups={};
+  focusSessions().filter(s=>s.completed&&s.quality&&s.startTs).forEach(s=>{
+    const h=new Date(s.startTs).getHours();groups[h]??=[];groups[h].push(Number(s.quality));
+  });
+  const ranked=Object.entries(groups).map(([h,a])=>({hour:Number(h),q:a.reduce((x,y)=>x+y,0)/a.length,n:a.length})).sort((a,b)=>b.q-a.q||b.n-a.n);
+  return ranked[0]||null;
+}
+function renderHourGrid(){
+  const box=$('hourGrid');if(!box)return;box.innerHTML='';
+  const groups={};
+  focusSessions().filter(s=>s.completed&&s.quality&&s.startTs).forEach(s=>{
+    const h=new Date(s.startTs).getHours();groups[h]??=[];groups[h].push(Number(s.quality));
+  });
+  for(let h=6;h<=23;h++){
+    const a=groups[h]||[],q=a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+    const el=document.createElement('div');el.className='hourCell';
+    if(q){const alpha=.08+q*.06;el.style.background=`rgba(102,230,243,${alpha})`}
+    el.innerHTML=`<strong>${String(h).padStart(2,'0')}:00</strong><span>${q?q.toFixed(1)+'/5':'–'}</span>`;
+    box.appendChild(el);
+  }
+}
+function exportCSV(){
+  const sessions=sessionList(),rows=[['timestamp','start_timestamp','type','minutes','task','completed','quality','energy_after','stop_reason','note']];
+  sessions.slice().reverse().forEach(s=>rows.push([s.ts||'',s.startTs||'',s.type||'',s.minutes??'',s.task||'',s.completed??'',s.quality??'',s.energyAfter??'',s.stopReason||'',s.note||'']));
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='focus-console-v3-sessions.csv';a.click();URL.revokeObjectURL(a.href);
+}
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===name));
+  if(name==='history')renderHistory();if(name==='lab')renderDebrief();
+}
+function clearData(){
+  if(!confirm('Clear all Focus Console v3 local data?'))return;
+  Object.keys(localStorage).filter(k=>k.startsWith('fc3_')).forEach(k=>localStorage.removeItem(k));location.reload();
+}
+function buildScoreButtons(containerId,handler){
+  const c=$(containerId);for(let i=1;i<=5;i++){
+    const b=document.createElement('button');b.className='scoreBtn';b.dataset.value=i;b.textContent=i;b.onclick=()=>handler(i);c.appendChild(b);
+  }
+}
+
+buildScoreButtons('energyButtons',v=>{state.morningEnergy=v;selectScore('energyButtons',v)});
+buildScoreButtons('qualityButtons',v=>{state.reviewQuality=v;selectScore('qualityButtons',v)});
+buildScoreButtons('afterEnergyButtons',v=>{state.reviewEnergy=v;selectScore('afterEnergyButtons',v)});
+
+loadSettings();loadDay();
+$('task').value=localStorage.getItem(LS('task'))||'';
+$('notes').value=state.notes||localStorage.getItem(LS('notes'))||'';
+
+$('startBtn').onclick=toggle;
+$('resetBtn').onclick=resetTimer;
+$('skipBtn').onclick=requestSkip;
+$('fullBtn').onclick=()=>{$('appWrap').classList.toggle('fullscreen');$('fullBtn').textContent=$('appWrap').classList.contains('fullscreen')?'EXIT FULL':'FULL SCREEN'};
+$('addDistraction').onclick=addDistraction;
+$('distractionInput').addEventListener('keydown',e=>{if(e.key==='Enter')addDistraction()});
+$('soundBtn').onclick=()=>{defaults.sound=!defaults.sound;saveSettings();render()};
+$('clearBtn').onclick=clearData;$('exportBtn').onclick=exportCSV;
+$('task').oninput=saveSettings;$('notes').oninput=()=>{saveSettings();saveDay()};
+$('intentBtn').onclick=openIntent;$('intentLater').onclick=()=>$('intentOverlay').classList.remove('show');$('saveIntent').onclick=saveIntent;
+$('saveReview').onclick=saveReview;$('skipReview').onclick=skipReview;
+$('cancelStop').onclick=()=>{$('stopOverlay').classList.remove('show')};
+$('confirmStop').onclick=()=>{const r=$('stopReason').value,n=$('stopNote').value.trim();$('stopOverlay').classList.remove('show');$('stopNote').value='';skipCurrent(r,n)};
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+['focusInput','breakInput','moveInput','breathInput','moveEvery','dailyTarget','recoveryMode'].forEach(id=>{
+  $(id).onchange=()=>{saveSettings();if(['focusInput','breakInput','moveInput','breathInput'].includes(id))resetTimer();render()}
+});
+document.addEventListener('keydown',e=>{
+  if(['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName))return;
+  if(e.code==='Space'){e.preventDefault();toggle()}
+  if(e.key.toLowerCase()==='r')resetTimer();
+  if(e.key.toLowerCase()==='s')requestSkip();
+});
+function updateClock(){$('clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+' // ONLINE'}
+setInterval(updateClock,1000);updateClock();resetTimer();renderHistory();
+
+const intent=getJSON('intent',{date:''});
+if(intent.date!==todayKey())setTimeout(openIntent,450);
+</script>
+</body>
+</html>

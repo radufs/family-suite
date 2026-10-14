@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Radu · New Tab</title>
+<style>
+:root{
+  --bg0:#08111d;--bg1:#10233a;--glass:rgba(11,24,39,.58);--glass2:rgba(255,255,255,.075);
+  --line:rgba(255,255,255,.12);--text:#f7fbff;--muted:#a8bbce;--accent:#78c7ff;--shadow:0 24px 70px rgba(0,0,0,.32)
+}
+*{box-sizing:border-box}html,body{min-height:100%}body{margin:0;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 20% 0%,#183f66 0,transparent 42%),radial-gradient(circle at 90% 20%,#203057 0,transparent 40%),linear-gradient(145deg,var(--bg0),var(--bg1));overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(rgba(255,255,255,.018),rgba(255,255,255,0));mix-blend-mode:screen}
+.shell{min-height:100vh;max-width:1280px;margin:0 auto;padding:6vh 28px 74px;display:flex;flex-direction:column;gap:24px}
+.top{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:18px;align-items:stretch}.glass{background:var(--glass);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:26px}
+.hero{padding:38px 40px;min-height:300px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:280px;height:280px;border-radius:50%;right:-80px;top:-120px;background:radial-gradient(circle,rgba(120,199,255,.22),transparent 68%)}
+.greeting{font-size:14px;color:#c5d8e9;font-weight:750;letter-spacing:.08em;text-transform:uppercase}.clock{font-variant-numeric:tabular-nums;font-size:clamp(72px,11vw,140px);font-weight:650;line-height:.95;letter-spacing:-.065em;margin:8px 0 2px}.seconds{font-size:.27em;color:#8db7d7;letter-spacing:-.02em;margin-left:12px}.date{color:var(--muted);font-size:17px}
+.weather{padding:28px;display:flex;flex-direction:column;justify-content:space-between;min-height:300px}.weather-head,.weather-row,.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.weather-title{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b8ccdf}.weather-place{font-size:13px;color:var(--muted);max-width:180px;text-align:right}.weather-main{display:flex;align-items:center;gap:15px;margin:18px 0}.weather-icon{font-size:54px;line-height:1}.weather-temp{font-size:56px;font-weight:750;letter-spacing:-.05em}.weather-desc{color:#c9d7e4;font-size:15px}.weather-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.weather-stat{background:var(--glass2);border:1px solid rgba(255,255,255,.07);padding:10px;border-radius:13px}.weather-stat span{display:block;color:#89a2b8;font-size:10px;text-transform:uppercase;letter-spacing:.08em}.weather-stat strong{display:block;margin-top:3px;font-size:14px}.weather-note{font-size:11px;color:#7f9bb2;margin-top:10px}
+.quote{padding:24px 28px;display:flex;align-items:center;gap:18px}.quote-mark{font:700 44px Georgia,serif;color:#78c7ff;align-self:flex-start;line-height:.8}.quote-text{font-size:clamp(18px,2vw,24px);line-height:1.4;font-weight:650;letter-spacing:-.01em;flex:1}.icon-btn{border:1px solid var(--line);background:rgba(255,255,255,.06);color:#dff1ff;width:38px;height:38px;border-radius:12px;cursor:pointer;font-size:17px}.icon-btn:hover,.btn:hover{background:rgba(255,255,255,.11)}
+.bookmarks{padding:24px}.panel-head h2{margin:0;font-size:15px;letter-spacing:.02em}.panel-sub{color:var(--muted);font-size:12px;margin-top:4px}.btn{border:1px solid var(--line);background:rgba(255,255,255,.055);color:var(--text);border-radius:11px;padding:9px 12px;font:inherit;font-size:12px;font-weight:750;cursor:pointer}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px}.bookmark{position:relative;text-decoration:none;color:var(--text);padding:18px 16px;border:1px solid rgba(255,255,255,.09);background:linear-gradient(155deg,rgba(255,255,255,.085),rgba(255,255,255,.035));border-radius:18px;min-height:110px;display:flex;flex-direction:column;justify-content:space-between;transition:.16s ease}.bookmark:hover{transform:translateY(-3px);border-color:rgba(120,199,255,.46);background:linear-gradient(155deg,rgba(120,199,255,.14),rgba(255,255,255,.04))}.bicon{font-size:26px}.btitle{font-size:14px;font-weight:750;margin-top:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bhost{font-size:10px;color:#8fa7bc;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bottom-hub{position:fixed;right:18px;bottom:14px;color:#7f95a8;text-decoration:none;font-size:11px;letter-spacing:.02em;padding:7px 9px;border-radius:8px;opacity:.72}.bottom-hub:hover{opacity:1;color:#cfe9ff;background:rgba(0,0,0,.22)}
+.modal{position:fixed;inset:0;background:rgba(2,8,15,.72);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.modal.show{display:flex}.modal-card{width:min(760px,100%);max-height:88vh;overflow:auto;background:#101f2f;border:1px solid rgba(255,255,255,.13);border-radius:22px;box-shadow:0 30px 90px rgba(0,0,0,.55);padding:24px}.modal-card h3{margin:0 0 5px}.hint{color:var(--muted);font-size:12px;line-height:1.5}.form-row{display:grid;grid-template-columns:58px 1fr 1.7fr auto auto;gap:8px;margin:9px 0;align-items:center}.form-row input{width:100%;background:#0b1825;border:1px solid rgba(255,255,255,.11);border-radius:9px;padding:9px;color:#eff8ff;font:inherit}.form-row button{border:1px solid rgba(255,255,255,.11);background:#16283a;color:#dcecff;border-radius:9px;padding:8px 9px;cursor:pointer}.section-line{height:1px;background:rgba(255,255,255,.09);margin:22px 0}.loc-row{display:flex;gap:8px;flex-wrap:wrap}.loc-row input{flex:1;min-width:220px;background:#0b1825;border:1px solid rgba(255,255,255,.11);border-radius:9px;padding:10px;color:#eff8ff}.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}.primary{background:#2a77b8!important;border-color:#3a8ed0!important}.tiny-note{font-size:10px;color:#7890a4;margin-top:7px}
+@media(max-width:900px){.top{grid-template-columns:1fr}.weather{min-height:auto}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{min-height:250px}.form-row{grid-template-columns:48px 1fr 1.5fr auto}.form-row .move{display:none}}
+@media(max-width:520px){.shell{padding:20px 14px 64px}.hero{padding:26px}.weather,.bookmarks{padding:20px}.quote{padding:20px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.bookmark{min-height:100px}.form-row{grid-template-columns:46px 1fr auto}.form-row .url{grid-column:1/-1}.clock{font-size:72px}.seconds{display:none}}
+</style>
+<style>
+/* Family Suite v13 categorized navigation */
+.suite-menu-bar{position:relative;z-index:10000;display:flex;align-items:center;gap:12px;padding:10px 14px;margin:0 0 12px;border:1px solid rgba(148,163,184,.22);border-radius:14px;background:rgba(15,23,42,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 8px 24px rgba(0,0,0,.12);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#e5e7eb}
+.suite-menu-bar a{text-decoration:none}
+.suite-menu{position:relative}
+.suite-menu>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;font-size:14px;font-weight:800;letter-spacing:.01em;color:#f8fafc;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);user-select:none}
+.suite-menu>summary::-webkit-details-marker{display:none}
+.suite-menu>summary:hover{background:rgba(255,255,255,.12)}
+.suite-menu[open]>summary{background:rgba(56,189,248,.14);border-color:rgba(56,189,248,.30)}
+.suite-menu-current{font-size:12px;font-weight:700;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.suite-menu-panel{position:absolute;top:calc(100% + 8px);left:0;width:min(340px,calc(100vw - 28px));max-height:76vh;overflow:auto;padding:10px;border-radius:14px;background:#0f172a;border:1px solid rgba(148,163,184,.28);box-shadow:0 24px 55px rgba(0,0,0,.32)}
+.suite-menu-category{padding:8px 6px 10px;border-bottom:1px solid rgba(148,163,184,.14)}
+.suite-menu-category:last-child{border-bottom:0}
+.suite-menu-category-title{padding:0 8px 5px;font-size:10px;line-height:1.2;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#64748b}
+.suite-menu-link{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 9px;border-radius:9px;color:#dbeafe;font-size:13px;font-weight:650}
+.suite-menu-link:hover{background:rgba(148,163,184,.12);color:#fff}
+.suite-menu-link.active{background:rgba(56,189,248,.16);color:#7dd3fc}
+.suite-menu-link.active::after{content:"Current";font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#38bdf8}
+@media (max-width:640px){.suite-menu-bar{margin-bottom:10px;border-radius:12px}.suite-menu-current{display:none}.suite-menu-panel{max-height:72vh}}
+</style><style>.clock-quote{display:flex;gap:12px;align-items:center;margin-top:10px}.clock-quote .quote-text{font-size:17px;font-weight:400;line-height:1.4;color:var(--muted)}.clock-quote .icon-btn{width:28px;height:28px;flex:0 0 28px;font-size:15px}.grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}.bookmark{min-height:82px;padding:12px;border-radius:13px}.bicon{font-size:20px}.btitle{font-size:12px;margin-top:8px}.bhost{font-size:9px}@media(max-width:1000px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}@media(max-width:640px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.clock-quote .quote-text{font-size:17px}}</style><style>.suite-menu{border:0;background:transparent;padding:0;margin:0}.suite-menu>summary{line-height:1.3}</style></head>
+<body><nav aria-label="Family Suite navigation" class="suite-menu-bar"><details class="suite-menu"><summary><span aria-hidden="true">☰</span><span>Family Suite</span><span aria-hidden="true">▾</span></summary><div class="suite-menu-panel"><div class="suite-menu-category"><div class="suite-menu-category-title">Start</div><a aria-current="page" class="suite-menu-link active" href="new_tab.html">New Tab</a><a class="suite-menu-link" href="family_hub.html">Family Hub</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Family</div><a class="suite-menu-link" href="family_week.html">Family Week</a><a class="suite-menu-link" href="maintenance.html">Maintenance</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Finances</div><a class="suite-menu-link" href="family_wealth.html">Family Wealth</a><a class="suite-menu-link" href="investment_rules.html">Investment Rules</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Learning</div><a class="suite-menu-link" href="danish_lesson.html">Danish Lesson Lab</a><a class="suite-menu-link" href="Learn_Danish_v2_2026-10-14.xlsx">Danish workbook</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Health &amp; Performance</div><a class="suite-menu-link" href="longevity_hacks.html">Longevity Hacks</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Personal Systems</div><a class="suite-menu-link" href="focus_console.html">Focus Console</a><a class="suite-menu-link" href="decision_journal.html">Decision Journal</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">AI &amp; Projects</div><a class="suite-menu-link" href="radu_context.html">Radu Context</a><a class="suite-menu-link" href="project_portfolio.html">Project Portfolio</a></div></div></details><span class="suite-menu-current">Start · New Tab</span></nav>
+<main class="shell">
+<section class="top">
+<article class="hero glass">
+<div><div class="greeting" id="greeting">Good evening</div><div class="clock"><span id="hhmm">19:41</span><span class="seconds" id="ss">00</span></div></div>
+<div><div class="date" id="dateLine">Today</div><div class="clock-quote"><div class="quote-text" id="quoteText"></div><button class="icon-btn" id="newQuote" title="Generate another quote" aria-label="Generate another quote">↻</button></div></div>
+</article>
+<article class="weather glass">
+<div class="weather-head"><div class="weather-title">Local weather</div><div class="weather-place" id="weatherPlace">Copenhagen</div></div>
+<div class="weather-main"><div class="weather-icon" id="weatherIcon">◌</div><div><div class="weather-temp" id="weatherTemp">—°</div><div class="weather-desc" id="weatherDesc">Loading weather…</div></div></div>
+<div><div class="weather-stats"><div class="weather-stat"><span>Feels</span><strong id="feels">—</strong></div><div class="weather-stat"><span>Rain</span><strong id="rain">—</strong></div><div class="weather-stat"><span>Wind</span><strong id="wind">—</strong></div></div><div class="weather-note" id="weatherNote">Open-Meteo · no API key</div></div>
+</article>
+</section>
+
+<section class="bookmarks glass">
+<div class="panel-head"><div><h2>Quick links</h2><div class="panel-sub">Your editable high-frequency bookmarks</div></div><button class="btn" id="customize">Customize</button></div>
+<div class="grid" id="bookmarkGrid"></div>
+</section>
+</main>
+<a class="bottom-hub" href="family_hub.html" title="Open Family Hub">Family Hub ↗</a>
+<div class="modal" id="modal"><div class="modal-card">
+<div class="panel-head"><div><h3>Customize new tab</h3><div class="hint">Bookmarks and location settings are stored only in this browser.</div></div><button class="icon-btn" id="closeModal">×</button></div>
+<div class="section-line"></div>
+<h3 style="font-size:14px">Bookmarks</h3><div class="hint">Use an emoji or short symbol as the icon. Links open in the current tab.</div>
+<div id="bookmarkEditor"></div>
+<button class="btn" id="addBookmark">+ Add bookmark</button>
+<div class="section-line"></div>
+<h3 style="font-size:14px">Weather location</h3>
+<div class="hint">Use browser location for the most local result, or save a city. If neither is available, Copenhagen is used.</div>
+<div class="loc-row"><input id="cityInput" placeholder="Search city, e.g. Copenhagen"/><button class="btn" id="searchCity">Save city</button><button class="btn" id="useLocation">Use my location</button></div>
+<div class="tiny-note" id="locationStatus"></div>
+<div class="modal-actions"><button class="btn" id="resetBtn">Reset defaults</button><button class="btn primary" id="saveClose">Save &amp; close</button></div>
+</div></div>
+<script>
+const KEY='familySuite.newTab.v1';
+const DEFAULT={bookmarks:[
+  {title:'ChatGPT',url:'https://chatgpt.com/',icon:'✦'},
+  {title:'Gmail',url:'https://mail.google.com/',icon:'✉'},
+  {title:'Calendar',url:'https://calendar.google.com/',icon:'◫'},
+  {title:'Drive',url:'https://drive.google.com/',icon:'◆'},
+  {title:'YouTube',url:'https://www.youtube.com/',icon:'▶'},
+  {title:'Google Maps',url:'https://maps.google.com/',icon:'⌖'},
+  {title:'Nordnet',url:'https://www.nordnet.dk/',icon:'↗'},
+  {title:'Reddit',url:'https://www.reddit.com/',icon:'◉'},{title:'Family Week',url:'family_week.html',icon:'◫'},{title:'Danish Learning',url:'danish_lesson.html',icon:'DK'},{title:'Family Wealth',url:'family_wealth.html',icon:'↗'},{title:'Focus Console',url:'focus_console.html',icon:'◷'}
+],location:{mode:'fallback',name:'Copenhagen',lat:55.6761,lon:12.5683}};
+let state=load();
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.bookmarks)&&s.location)return s}catch(e){}return clone(DEFAULT)}
+function persist(){localStorage.setItem(KEY,JSON.stringify(state))}
+function pad(n){return String(n).padStart(2,'0')}
+function updateClock(){const d=new Date(),h=d.getHours();hhmm.textContent=`${pad(h)}:${pad(d.getMinutes())}`;ss.textContent=pad(d.getSeconds());dateLine.textContent=new Intl.DateTimeFormat(undefined,{weekday:'long',day:'numeric',month:'long'}).format(d);greeting.textContent=h<5?'Good night':h<12?'Good morning':h<18?'Good afternoon':'Good evening'}
+setInterval(updateClock,1000);updateClock();
+const parts={openers:['Choose the next useful action.','Make the next step obvious.','Protect your attention.','Start smaller than your resistance.','Trade urgency for direction.','Use curiosity before judgment.','Let evidence update the plan.','Do the important thing before the interesting thing.'],closers:['Consistency can do the heavy lifting.','Clarity usually arrives after movement.','Small proof beats a large intention.','A calm system outperforms a heroic day.','What you repeat becomes easier to become.','Progress compounds when friction stays low.','Good decisions need fewer promises and better feedback.','The goal is not intensity; it is return.']};
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function quote(seed){const n=typeof seed==='number'?seed:Math.floor(Math.random()*1e9);return `${parts.openers[n%parts.openers.length]} ${parts.closers[Math.floor(n/parts.openers.length)%parts.closers.length]}`}
+function dailyQuote(){const d=new Date();quoteText.textContent=quote(hash(`${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`))}dailyQuote();let quoteDate=new Date().toDateString();setInterval(()=>{const today=new Date().toDateString();if(today!==quoteDate){quoteDate=today;dailyQuote()}},60000);newQuote.onclick=()=>quoteText.textContent=quote();
+function host(u){if(/^[a-z_]+\.html/i.test(u))return 'Family Suite';try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){return u}}
+function safeUrl(u){u=(u||'').trim();if(/^[a-z_]+\.html(?:#[a-z_-]+)?$/i.test(u))return u;if(!/^https?:\/\//i.test(u))u='https://'+u;return u}
+function renderBookmarks(){bookmarkGrid.innerHTML='';state.bookmarks.forEach(b=>{const a=document.createElement('a');a.className='bookmark';a.href=safeUrl(b.url);a.innerHTML=`<div class="bicon">${escapeHtml(b.icon||'↗')}</div><div><div class="btitle">${escapeHtml(b.title||'Bookmark')}</div><div class="bhost">${escapeHtml(host(safeUrl(b.url)))}</div></div>`;bookmarkGrid.appendChild(a)})}
+function escapeHtml(s){return String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]))}
+renderBookmarks();
+const weatherCodes={0:['☀','Clear'],1:['🌤','Mostly clear'],2:['⛅','Partly cloudy'],3:['☁','Overcast'],45:['🌫','Fog'],48:['🌫','Rime fog'],51:['🌦','Light drizzle'],53:['🌦','Drizzle'],55:['🌧','Heavy drizzle'],61:['🌦','Light rain'],63:['🌧','Rain'],65:['🌧','Heavy rain'],71:['🌨','Light snow'],73:['🌨','Snow'],75:['❄','Heavy snow'],80:['🌦','Rain showers'],81:['🌧','Showers'],82:['⛈','Heavy showers'],95:['⛈','Thunderstorm'],96:['⛈','Thunderstorm + hail'],99:['⛈','Heavy hail storm']};
+async function fetchWeather(loc=state.location){weatherPlace.textContent=loc.name||'Local';weatherDesc.textContent='Loading weather…';try{const url=`https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(loc.lat)}&longitude=${encodeURIComponent(loc.lon)}&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&timezone=auto`;const r=await fetch(url);if(!r.ok)throw new Error('Weather request failed');const x=await r.json(),c=x.current||{},m=weatherCodes[c.weather_code]||['◌','Current conditions'];weatherIcon.textContent=m[0];weatherTemp.textContent=Math.round(c.temperature_2m)+'°';weatherDesc.textContent=m[1];feels.textContent=Math.round(c.apparent_temperature)+'°';rain.textContent=(Number(c.precipitation)||0).toFixed(1)+' mm';wind.textContent=Math.round(c.wind_speed_10m)+' km/h';weatherNote.textContent=`Open-Meteo · updated ${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`}catch(e){weatherIcon.textContent='◌';weatherTemp.textContent='—°';weatherDesc.textContent='Weather unavailable';weatherNote.textContent='Check your internet connection or location setting.'}}
+fetchWeather();setInterval(()=>fetchWeather(),15*60*1000);
+function renderEditor(){bookmarkEditor.innerHTML='';state.bookmarks.forEach((b,i)=>{const row=document.createElement('div');row.className='form-row';row.innerHTML=`<input data-k="icon" value="${escapeHtml(b.icon||'')}" aria-label="Icon"><input data-k="title" value="${escapeHtml(b.title||'')}" aria-label="Title"><input class="url" data-k="url" value="${escapeHtml(b.url||'')}" aria-label="URL"><button class="move" title="Move up">↑</button><button title="Delete">×</button>`;row.querySelectorAll('input').forEach(inp=>inp.oninput=()=>{b[inp.dataset.k]=inp.value});const btns=row.querySelectorAll('button');btns[0].onclick=()=>{if(i>0){state.bookmarks.splice(i-1,0,state.bookmarks.splice(i,1)[0]);renderEditor()}};btns[1].onclick=()=>{state.bookmarks.splice(i,1);renderEditor()};bookmarkEditor.appendChild(row)})}
+customize.onclick=()=>{renderEditor();cityInput.value=state.location.mode==='city'?state.location.name:'';locationStatus.textContent=`Current: ${state.location.name}`;modal.classList.add('show')};closeModal.onclick=()=>modal.classList.remove('show');modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show')});
+addBookmark.onclick=()=>{state.bookmarks.push({title:'New link',url:'https://',icon:'↗'});renderEditor()};
+saveClose.onclick=()=>{state.bookmarks=state.bookmarks.map(b=>({title:(b.title||'Bookmark').trim(),url:safeUrl(b.url),icon:(b.icon||'↗').trim()})).filter(b=>b.url);persist();renderBookmarks();modal.classList.remove('show')};
+resetBtn.onclick=()=>{if(confirm('Reset bookmarks and weather location to defaults?')){state=clone(DEFAULT);persist();renderEditor();renderBookmarks();fetchWeather();locationStatus.textContent='Reset to Copenhagen fallback.'}};
+searchCity.onclick=async()=>{const q=cityInput.value.trim();if(!q)return;locationStatus.textContent='Searching…';try{const r=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=1&language=en&format=json`);const x=await r.json(),p=x.results&&x.results[0];if(!p)throw new Error('No match');state.location={mode:'city',name:[p.name,p.admin1,p.country_code].filter(Boolean).join(', '),lat:p.latitude,lon:p.longitude};persist();locationStatus.textContent=`Saved: ${state.location.name}`;fetchWeather()}catch(e){locationStatus.textContent='City not found. Try a more specific name.'}};
+useLocation.onclick=()=>{if(!navigator.geolocation){locationStatus.textContent='Geolocation is not supported by this browser.';return}locationStatus.textContent='Requesting browser location…';navigator.geolocation.getCurrentPosition(pos=>{state.location={mode:'device',name:'Current location',lat:pos.coords.latitude,lon:pos.coords.longitude};persist();locationStatus.textContent='Using browser location.';fetchWeather()},()=>{locationStatus.textContent='Location permission was not granted. Your saved city/fallback remains active.'},{enableHighAccuracy:false,timeout:10000,maximumAge:30*60*1000})};
+</script>
+</body></html>

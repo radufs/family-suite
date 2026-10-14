@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Investment Rulebook Builder</title><style>
+:root{--blue:#2563eb;--ink:#1e293b;--muted:#64748b;--line:#e2e8f0;--soft:#f8fafc;--green:#18794e;--amber:#9a5b00;--red:#a33a3a;--violet:#6d51bd}*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.suite-nav{max-width:1240px;margin:15px auto 0;padding:0 18px;display:flex;gap:8px;flex-wrap:wrap}.suite-nav a{color:#334155;text-decoration:none;border:1px solid var(--line);padding:9px 13px;border-radius:10px;font-size:13px;font-weight:700}.suite-nav .active{background:var(--blue);color:#fff}.wrap{max-width:1240px;margin:auto;padding:28px 18px 60px}header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}h1{margin:0 0 7px;font-size:34px;letter-spacing:-.035em}h2{font-size:19px;margin:0 0 12px}h3{font-size:15px;margin:0 0 8px}.subtitle,.hint{color:var(--muted);font-size:13px;line-height:1.55}.actions{display:flex;gap:8px;flex-wrap:wrap}button{cursor:pointer;font:inherit;border:1px solid var(--line);border-radius:9px;background:#fff;padding:9px 13px;color:var(--ink)}button.primary{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:750}button.danger{color:var(--red)}button:hover{filter:brightness(.985)}.layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(330px,.85fr);gap:18px}.card{border:1px solid var(--line);border-radius:15px;background:#fff;padding:20px;margin-bottom:14px;box-shadow:0 5px 16px #1b34500a}.soft{background:var(--soft)}label{font-size:13px;display:block;margin:12px 0 6px;font-weight:750}input,textarea,select{width:100%;font:inherit;font-size:14px;color:var(--ink);background:#fff;border:1px solid #cbd5e1;border-radius:9px;padding:10px;min-width:0}textarea{min-height:78px;resize:vertical}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.pill{display:inline-block;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:750;background:#eef4ff;color:#245fbd}.warn{background:#fff8ed;border:1px solid #f0d8ad;color:#7b531c;padding:11px 12px;border-radius:10px;font-size:12px;line-height:1.5;margin:8px 0}.ok{background:#eef9f3;border:1px solid #cde8d8;color:#1b6744;padding:11px 12px;border-radius:10px;font-size:12px;line-height:1.5;margin:8px 0}.error{background:#fff2f2;border:1px solid #edcccc;color:#8d3434;padding:11px 12px;border-radius:10px;font-size:12px;line-height:1.5;margin:8px 0}.preview{white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;line-height:1.55;background:#0f172a;color:#dbeafe;border-radius:12px;padding:16px;max-height:680px;overflow:auto}.sticky{position:sticky;top:12px}.counter{font-size:12px;color:var(--muted);margin-top:7px}.question{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}.checkline{display:flex;gap:9px;align-items:flex-start;margin:9px 0;font-size:13px}.checkline input{width:auto;margin-top:3px}.tagline{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.sr-only{position:absolute;left:-9999px}.callout{border-left:4px solid var(--blue);padding:10px 12px;background:#f8fbff;border-radius:8px;font-size:13px;line-height:1.55}.small{font-size:12px}.source{font-size:12px;color:var(--muted);line-height:1.5}.source a{color:var(--blue)}@media(max-width:900px){.layout{grid-template-columns:1fr}.sticky{position:static}.grid3{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
+</style><style>
+/* Family Suite v13 categorized navigation */
+.suite-menu-bar{position:relative;z-index:10000;display:flex;align-items:center;gap:12px;padding:10px 14px;margin:0 0 12px;border:1px solid rgba(148,163,184,.22);border-radius:14px;background:rgba(15,23,42,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 8px 24px rgba(0,0,0,.12);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#e5e7eb}
+.suite-menu-bar a{text-decoration:none}
+.suite-menu{position:relative}
+.suite-menu>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;font-size:14px;font-weight:800;letter-spacing:.01em;color:#f8fafc;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);user-select:none}
+.suite-menu>summary::-webkit-details-marker{display:none}
+.suite-menu>summary:hover{background:rgba(255,255,255,.12)}
+.suite-menu[open]>summary{background:rgba(56,189,248,.14);border-color:rgba(56,189,248,.30)}
+.suite-menu-current{font-size:12px;font-weight:700;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.suite-menu-panel{position:absolute;top:calc(100% + 8px);left:0;width:min(340px,calc(100vw - 28px));max-height:76vh;overflow:auto;padding:10px;border-radius:14px;background:#0f172a;border:1px solid rgba(148,163,184,.28);box-shadow:0 24px 55px rgba(0,0,0,.32)}
+.suite-menu-category{padding:8px 6px 10px;border-bottom:1px solid rgba(148,163,184,.14)}
+.suite-menu-category:last-child{border-bottom:0}
+.suite-menu-category-title{padding:0 8px 5px;font-size:10px;line-height:1.2;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#64748b}
+.suite-menu-link{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 9px;border-radius:9px;color:#dbeafe;font-size:13px;font-weight:650}
+.suite-menu-link:hover{background:rgba(148,163,184,.12);color:#fff}
+.suite-menu-link.active{background:rgba(56,189,248,.16);color:#7dd3fc}
+.suite-menu-link.active::after{content:"Current";font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#38bdf8}
+@media (max-width:640px){.suite-menu-bar{margin-bottom:10px;border-radius:12px}.suite-menu-current{display:none}.suite-menu-panel{max-height:72vh}}
+</style><style>.suite-menu{border:0;background:transparent;padding:0;margin:0}.suite-menu>summary{line-height:1.3}</style></head><body><nav aria-label="Family Suite navigation" class="suite-menu-bar"><details class="suite-menu"><summary><span aria-hidden="true">☰</span><span>Family Suite</span><span aria-hidden="true">▾</span></summary><div class="suite-menu-panel"><div class="suite-menu-category"><div class="suite-menu-category-title">Start</div><a class="suite-menu-link" href="new_tab.html">New Tab</a><a class="suite-menu-link" href="family_hub.html">Family Hub</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Family</div><a class="suite-menu-link" href="family_week.html">Family Week</a><a class="suite-menu-link" href="maintenance.html">Maintenance</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Finances</div><a class="suite-menu-link" href="family_wealth.html">Family Wealth</a><a aria-current="page" class="suite-menu-link active" href="investment_rules.html">Investment Rules</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Learning</div><a class="suite-menu-link" href="danish_lesson.html">Danish Lesson Lab</a><a class="suite-menu-link" href="Learn_Danish_v2_2026-10-14.xlsx">Danish workbook</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Health &amp; Performance</div><a class="suite-menu-link" href="longevity_hacks.html">Longevity Hacks</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Personal Systems</div><a class="suite-menu-link" href="focus_console.html">Focus Console</a><a class="suite-menu-link" href="decision_journal.html">Decision Journal</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">AI &amp; Projects</div><a class="suite-menu-link" href="radu_context.html">Radu Context</a><a class="suite-menu-link" href="project_portfolio.html">Project Portfolio</a></div></div></details><span class="suite-menu-current">Finances · Investment Rules</span></nav><main class="wrap">
+<header><div><span class="pill">Denmark · behavior-first</span><h1>INVESTMENT_RULES.md Builder</h1><p class="subtitle">Interview yourself once, then use the resulting one-page rulebook when markets are emotional. No security recommendations; the page focuses on process, diversification, tax awareness and behavior.</p><div class="tagline"><span class="pill">15–30 min setup</span><span class="pill">&lt;1,000 words</span><span class="pill">local browser storage</span></div></div><div class="actions"><button id="loadBtn">Load .md</button><button class="primary" id="downloadBtn">Save INVESTMENT_RULES.md</button><input accept=".md,text/markdown,text/plain" class="sr-only" id="loadFile" type="file"/></div></header>
+<div class="layout"><section>
+<div class="card"><h2>1. Purpose &amp; time horizon</h2><label>What is the money for?</label><textarea data-key="purpose" placeholder="e.g. long-term financial security, optionality and family goals"></textarea><div class="grid3"><div><label>Minimum horizon (years)</label><input data-key="horizon" max="60" min="1" placeholder="20" type="number"/></div><div><label>Need before horizon?</label><select data-key="earlyNeed"><option value="No planned need">No planned need</option><option value="Possible partial need">Possible partial need</option><option value="Likely partial need">Likely partial need</option></select></div><div><label>Risk statement</label><select data-key="risk"><option value="I accept large temporary losses in exchange for long-term growth, provided the strategy remains valid.">Accept large temporary losses</option><option value="I accept moderate temporary losses but want lower drawdown risk.">Prefer moderate drawdowns</option><option value="Capital stability is important enough that large drawdowns would make the plan unusable.">Capital stability is important</option></select></div></div></div>
+<div class="card"><h2>2. Contribution rules</h2><div class="grid3"><div><label>Target monthly contribution (DKK)</label><input data-key="target" min="0" step="100" type="number"/></div><div><label>Minimum monthly floor (DKK)</label><input data-key="floor" min="0" step="100" type="number"/></div><div><label>Frequency</label><select data-key="frequency"><option>Monthly</option><option>Quarterly</option><option>When salary arrives</option></select></div></div><label>When income changes</label><textarea data-key="incomeRule" placeholder="Define a measurable rule, not ‘invest more when possible’. Example: review contribution after a lasting income change or at annual review."></textarea></div>
+<div class="card"><h2>3. Diversification principles</h2><label>What must always be diversified?</label><textarea data-key="diversification" placeholder="Regions, sectors, issuers, asset types — write principles, not ticker names."></textarea><div class="grid2"><div><label>Maximum deliberate concentration (%)</label><input data-key="maxConcentration" max="100" min="1" placeholder="Optional" type="number"/></div><div><label>Leverage</label><select data-key="leverage"><option value="No borrowing or leveraged investing">No borrowing / leverage</option><option value="Only if explicitly reviewed and documented">Only after explicit review</option></select></div></div></div>
+<div class="card"><h2>4. Rebalancing</h2><div class="grid3"><div><label>Method</label><select data-key="rebalance"><option value="Annual review plus threshold check">Annual + threshold</option><option value="Threshold only">Threshold only</option><option value="Annual only">Annual only</option><option value="Quarterly calendar">Quarterly</option><option value="Monthly calendar">Monthly</option></select></div><div><label>Allocation drift threshold (%)</label><input data-key="drift" max="50" min="1" placeholder="5" type="number"/></div><div><label>Use contributions first?</label><select data-key="cashflow"><option value="Use new contributions and cash flows before selling holdings">Yes</option><option value="Selling is allowed whenever rebalancing is due">No preference</option></select></div></div><label>Tax-aware rebalancing rule</label><textarea data-key="taxRule">Before selling purely to rebalance, check the account type and the current Danish tax treatment. Prefer new contributions/cash flows where practical; do not create a taxable transaction merely to make an allocation cosmetically exact.</textarea></div>
+<div class="card"><h2>5. Market-crash protocol</h2><label>What do I do after a severe market fall?</label><textarea data-key="crash">Do not make same-day strategy changes. Re-read this rulebook, confirm that my purpose, horizon, liquidity needs and ability to contribute have not materially changed, then follow the existing contribution and rebalancing rules.</textarea><label>Cooling-off period before discretionary strategy change</label><select data-key="cooldown"><option value="48 hours">48 hours</option><option value="72 hours">72 hours</option><option value="7 days">7 days</option></select></div>
+<div class="card"><h2>6. Three explicit “I will not” rules</h2><input data-key="not1" value="I will not sell solely because markets have fallen or headlines are frightening."/><input data-key="not2" style="margin-top:8px" value="I will not buy an investment solely because its recent performance is strong or it is popular."/><input data-key="not3" style="margin-top:8px" value="I will not change the strategy without writing the reason, the evidence, the tax consequences and what would make me reverse the change."/></div>
+<div class="card"><h2>7. New-investment checklist</h2><textarea data-key="checklist">What role does this investment serve? What existing exposure does it add, replace or duplicate? What are total costs and Danish tax treatment in the intended account? What concentration or liquidity risk does it add? What evidence would make me reject it? Can I explain the thesis and main failure mode in two sentences?</textarea></div>
+<div class="card"><h2>8. When the strategy may change</h2><textarea data-key="change">Change only after a material change in goals, time horizon, cash-flow needs, risk capacity, Danish tax/regulatory rules, or strong new evidence that invalidates a core assumption. Market price movement alone is not a strategy change trigger.</textarea></div>
+<div class="card"><h2>9. Annual review</h2><div class="grid2"><div><label>Review month</label><select data-key="month"><option>January</option><option>February</option><option>March</option><option>April</option><option>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option>December</option></select></div><div><label>Maximum review time</label><select data-key="reviewTime"><option value="30 minutes">30 minutes</option><option value="60 minutes">60 minutes</option><option value="90 minutes">90 minutes</option></select></div></div><label>Review questions</label><textarea data-key="reviewQuestions">Did my goals or horizon change? Are contributions sustainable? Is diversification still within my rules? Did I break any behavioral rule? Did Danish tax rules or account limits change? Are fees or complexity higher than necessary? What, if anything, deserves one deliberate change?</textarea></div>
+</section><aside><div class="sticky"><div class="card"><h2>Rule quality check</h2><div id="warnings"></div></div><div class="card"><h2>2-minute crash card</h2><div class="callout" id="crashCard"></div></div><div class="card"><h2>Generated rulebook</h2><div class="preview" id="preview"></div><div class="counter" id="wordCount"></div></div><div class="card soft"><h3>Denmark tax guardrail</h3><p class="source">Keep tax rates and account limits out of the permanent rulebook because they change. At the annual review, verify the current rules on SKAT. In 2026, SKAT states that Aktiesparekonto returns are taxed at 17% under the mark-to-market principle and the contribution ceiling is 174,200 DKK; SKAT also states a 9,900 DKK basic annual aldersopsparing contribution limit and 15.3% annual tax on pension returns. These figures are reference points, not permanent rules.</p><p class="source"><a href="https://skat.dk/borger/aktier-og-andre-vaerdipapirer/aktiesparekonto" rel="noopener" target="_blank">SKAT: Aktiesparekonto</a> · <a href="https://skat.dk/borger/pension-og-efterloen/aldersopsparing-og-aldersforsikring" rel="noopener" target="_blank">SKAT: Aldersopsparing</a></p></div></div></aside></div></main>
+<script>
+const KEY='investment_rules_builder_v1';
+const fields=[...document.querySelectorAll('[data-key]')];
+function state(){return Object.fromEntries(fields.map(x=>[x.dataset.key,x.value.trim()]))}
+function setState(o){fields.forEach(x=>{if(o[x.dataset.key]!==undefined)x.value=o[x.dataset.key]})}
+function money(v){if(!v)return 'Not fixed';return new Intl.NumberFormat('da-DK').format(Number(v))+' DKK'}
+function generate(){
+  const d=state(), purpose=d.purpose||'[Define the purpose before using this rulebook]', h=d.horizon?`${d.horizon}+ years`:'[Define horizon]';
+  return `# INVESTMENT_RULES
+
+## Purpose & Horizon
+- Purpose: ${purpose}
+- Horizon: ${h}. Early need: ${d.earlyNeed}.
+- Risk rule: ${d.risk}
+
+## Contribution Rules
+- Target: ${money(d.target)} per month; minimum floor: ${money(d.floor)}; frequency: ${d.frequency}.
+- Income-change rule: ${d.incomeRule||'[Make this measurable]'}
+
+## Diversification
+- ${d.diversification||'[Define diversification principles without naming securities]'}
+${d.maxConcentration?`- Maximum deliberate concentration: ${d.maxConcentration}%.
+`:''}- Leverage: ${d.leverage}.
+
+## Rebalancing
+- ${d.rebalance}${d.drift?`, with a ${d.drift} percentage-point drift check`:''}.
+- ${d.cashflow}.
+- Tax rule: ${d.taxRule}
+
+## Market Crash Protocol
+- ${d.crash}
+- Cooling-off period before a discretionary strategy change: ${d.cooldown}.
+
+## I Will Not
+1. ${d.not1}
+2. ${d.not2}
+3. ${d.not3}
+
+## New Investment Checklist
+${d.checklist}
+
+## Change the Strategy Only If
+${d.change}
+
+## Annual Review
+- Review every ${d.month}; time-box: ${d.reviewTime}.
+- ${d.reviewQuestions}
+- Verify current Danish tax rates, account limits and taxation method with SKAT before changing account priorities or selling for tax reasons.
+`;
+}
+function vague(text){return /\b(reasonable|regularly|sometimes|when possible|significant|enough|often|occasionally|diversified)\b/i.test(text||'')}
+function validate(){
+  const d=state(),w=[];
+  if(!d.purpose)w.push('Purpose is blank. A rulebook cannot distinguish a market event from a genuine goal change without a stated purpose.');
+  if(!d.horizon)w.push('Time horizon is blank. Put a number on it.');
+  if(Number(d.floor)>Number(d.target)&&d.target)w.push('Contradiction: the minimum contribution floor is higher than the target contribution.');
+  if(!d.incomeRule||vague(d.incomeRule))w.push('Contribution rule may be vague. Replace “when possible / regularly / significant” with a date, amount, percentage or explicit trigger.');
+  if(!d.diversification)w.push('Diversification principles are blank. State what must be diversified, without naming securities.');
+  else if(vague(d.diversification))w.push('“Diversified” is not operational by itself. Add at least one measurable concentration or coverage rule.');
+  if(d.rebalance==='Monthly calendar')w.push('Monthly rebalancing may create unnecessary turnover. If you use taxable accounts, explicitly justify the tax and transaction-cost impact.');
+  if(d.cashflow.includes('No preference')&&/tax|taxable/i.test(d.taxRule||''))w.push('Your rebalancing settings allow immediate selling, while the tax rule says to consider tax effects. Decide which rule has priority.');
+  if(/sell|reduce exposure|go to cash/i.test(d.crash||'')&&!/do not|not sell/i.test(d.crash||''))w.push('Crash protocol appears to permit reactive selling. Make the trigger objective or require the predefined strategy-change conditions.');
+  if(!d.not1||!d.not2||!d.not3)w.push('Keep exactly three explicit “I will not” rules; they are the fastest part to read under stress.');
+  if(!d.change)w.push('Define strategy-change conditions before markets become emotional.');
+  const count=(generate().match(/\b[\w’'-]+\b/g)||[]).length;if(count>1000)w.push(`Rulebook is ${count} words. Cut it below 1,000.`);
+  return w;
+}
+function render(){
+  localStorage.setItem(KEY,JSON.stringify(state()));
+  const md=generate();preview.textContent=md;
+  const count=(md.match(/\b[\w’'-]+\b/g)||[]).length;wordCount.textContent=`${count} words · target < 1,000`;
+  const ws=validate();warnings.innerHTML=ws.length?ws.map(x=>`<div class="warn">${x}</div>`).join(''):'<div class="ok">No obvious contradictions, vagueness or tax-process problems detected. This is a process check, not individualized financial advice.</div>';
+  const d=state();crashCard.innerHTML=`<strong>Before I trade:</strong><br>1. No same-day strategy change.<br>2. Did my purpose, horizon or liquidity need actually change?<br>3. Follow normal contribution/rebalancing rules if not.<br>4. Wait ${d.cooldown||'48 hours'} before a discretionary change.<br>5. Change strategy only for a predefined trigger—not because prices moved.`;
+}
+fields.forEach(x=>x.addEventListener('input',render));
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)setState(s)}catch(e){}
+render();
+function download(name,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/markdown'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+downloadBtn.onclick=()=>download('INVESTMENT_RULES.md',generate());
+loadBtn.onclick=()=>loadFile.click();
+loadFile.onchange=async()=>{
+  const f=loadFile.files[0];if(!f)return;const t=await f.text();
+  const section=(h)=>{const m=t.match(new RegExp('## '+h+'\\n([\\s\\S]*?)(?=\\n\\n## |$)'));return m?m[1].trim():''};
+  const d={};let s=section('Purpose & Horizon');
+  d.purpose=(s.match(/- Purpose:\s*(.*)/)||[])[1]||''; d.horizon=(s.match(/- Horizon:\s*(\d+)/)||[])[1]||'';
+  s=section('Contribution Rules');let m=s.match(/Target:\s*([\d.,]+) DKK.*minimum floor:\s*([\d.,]+) DKK/i);if(m){d.target=m[1].replace(/\D/g,'');d.floor=m[2].replace(/\D/g,'')};d.incomeRule=(s.match(/Income-change rule:\s*(.*)/)||[])[1]||'';
+  s=section('Diversification');d.diversification=s.split('\n').filter(x=>x.startsWith('- '))[0]?.slice(2)||'';d.maxConcentration=(s.match(/Maximum deliberate concentration:\s*(\d+)/)||[])[1]||'';
+  s=section('Rebalancing');d.taxRule=(s.match(/- Tax rule:\s*(.*)/)||[])[1]||'';
+  d.crash=section('Market Crash Protocol').split('\n')[0]?.replace(/^[- ]+/,'')||'';
+  s=section('I Will Not');d.not1=(s.match(/^1\.\s*(.*)$/m)||[])[1]||'';d.not2=(s.match(/^2\.\s*(.*)$/m)||[])[1]||'';d.not3=(s.match(/^3\.\s*(.*)$/m)||[])[1]||'';
+  d.checklist=section('New Investment Checklist');d.change=section('Change the Strategy Only If');
+  s=section('Annual Review');d.month=(s.match(/Review every\s+([^;]+);/)||[])[1]||'January';d.reviewQuestions=s.split('\n').filter(x=>x.startsWith('- ')&&!x.includes('Review every')&&!x.includes('Verify current'))[0]?.slice(2)||'';
+  setState(d);render();loadFile.value='';
+};
+
+</script></body></html>

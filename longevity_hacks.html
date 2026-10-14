@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Longevity Hacks</title>
+<style>
+:root{
+  --bg:#f5f8f6;--card:#fff;--text:#17231b;--muted:#6d7c72;--line:#dfe7e1;
+  --accent:#198754;--accent2:#1f6feb;--soft:#eef8f1;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#f8fbf9,#eef4f0);color:var(--text)}
+.family-hub-nav{max-width:1240px;margin:14px auto 0;padding:0 18px;display:flex;gap:8px;flex-wrap:wrap}
+.family-hub-nav a{text-decoration:none;font-size:13px;font-weight:700;padding:9px 13px;border-radius:10px;border:1px solid rgba(120,140,160,.35);background:rgba(255,255,255,.92);color:#203040;box-shadow:0 4px 14px rgba(20,30,50,.05)}
+.family-hub-nav a.active{background:#1f6feb;border-color:#1f6feb;color:#fff}
+.wrap{max-width:1240px;margin:auto;padding:34px 18px 54px}
+header{display:flex;justify-content:space-between;gap:16px;align-items:end;flex-wrap:wrap;margin-bottom:18px}
+h1{margin:0 0 6px;font-size:32px}.subtitle{color:var(--muted);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 28px rgba(20,40,28,.05);overflow:hidden}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+input[type="search"]{min-width:280px;flex:1;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 13px}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700}
+table{width:100%;border-collapse:collapse}
+th,td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;background:#fafcfa;position:sticky;top:0}
+td.rank{text-align:center;font-weight:800;width:66px}
+td.price,td.utility,td.time{white-space:nowrap}
+.note-input{
+  width:100%;min-width:220px;min-height:58px;resize:vertical;
+  border:1px solid var(--line);border-radius:8px;padding:8px 9px;font:inherit;background:#fbfdfb
+}
+.utility-pill{display:inline-block;padding:5px 8px;border-radius:999px;background:var(--soft);color:#146c43;font-size:12px;font-weight:700}
+.foot{margin-top:14px;color:var(--muted);font-size:12px;line-height:1.5}
+@media(max-width:900px){
+  .card{overflow:auto} table{min-width:1050px}
+}
+</style>
+<style id="suiteNavCSS">.suite-nav{max-width:1280px;margin:14px auto 0;padding:0 18px;display:flex;gap:8px;flex-wrap:wrap}.suite-nav a{text-decoration:none;font-family:Inter,system-ui,sans-serif;font-size:13px;font-weight:700;padding:9px 13px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;color:#334155}.suite-nav a:hover{filter:brightness(.98)}.suite-nav a.active{background:#2563eb;border-color:#2563eb;color:#fff}</style><style>
+/* Family Suite v13 categorized navigation */
+.suite-menu-bar{position:relative;z-index:10000;display:flex;align-items:center;gap:12px;padding:10px 14px;margin:0 0 12px;border:1px solid rgba(148,163,184,.22);border-radius:14px;background:rgba(15,23,42,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 8px 24px rgba(0,0,0,.12);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#e5e7eb}
+.suite-menu-bar a{text-decoration:none}
+.suite-menu{position:relative}
+.suite-menu>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;font-size:14px;font-weight:800;letter-spacing:.01em;color:#f8fafc;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);user-select:none}
+.suite-menu>summary::-webkit-details-marker{display:none}
+.suite-menu>summary:hover{background:rgba(255,255,255,.12)}
+.suite-menu[open]>summary{background:rgba(56,189,248,.14);border-color:rgba(56,189,248,.30)}
+.suite-menu-current{font-size:12px;font-weight:700;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.suite-menu-panel{position:absolute;top:calc(100% + 8px);left:0;width:min(340px,calc(100vw - 28px));max-height:76vh;overflow:auto;padding:10px;border-radius:14px;background:#0f172a;border:1px solid rgba(148,163,184,.28);box-shadow:0 24px 55px rgba(0,0,0,.32)}
+.suite-menu-category{padding:8px 6px 10px;border-bottom:1px solid rgba(148,163,184,.14)}
+.suite-menu-category:last-child{border-bottom:0}
+.suite-menu-category-title{padding:0 8px 5px;font-size:10px;line-height:1.2;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#64748b}
+.suite-menu-link{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 9px;border-radius:9px;color:#dbeafe;font-size:13px;font-weight:650}
+.suite-menu-link:hover{background:rgba(148,163,184,.12);color:#fff}
+.suite-menu-link.active{background:rgba(56,189,248,.16);color:#7dd3fc}
+.suite-menu-link.active::after{content:"Current";font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#38bdf8}
+@media (max-width:640px){.suite-menu-bar{margin-bottom:10px;border-radius:12px}.suite-menu-current{display:none}.suite-menu-panel{max-height:72vh}}
+</style><style>.daily-idea{font-size:13px;line-height:1.5;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff}.daily-idea a{margin-left:8px}</style><style>.suite-menu{border:0;background:transparent;padding:0;margin:0}.suite-menu>summary{line-height:1.3}</style></head>
+<body><nav aria-label="Family Suite navigation" class="suite-menu-bar"><details class="suite-menu"><summary><span aria-hidden="true">☰</span><span>Family Suite</span><span aria-hidden="true">▾</span></summary><div class="suite-menu-panel"><div class="suite-menu-category"><div class="suite-menu-category-title">Start</div><a class="suite-menu-link" href="new_tab.html">New Tab</a><a class="suite-menu-link" href="family_hub.html">Family Hub</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Family</div><a class="suite-menu-link" href="family_week.html">Family Week</a><a class="suite-menu-link" href="maintenance.html">Maintenance</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Finances</div><a class="suite-menu-link" href="family_wealth.html">Family Wealth</a><a class="suite-menu-link" href="investment_rules.html">Investment Rules</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Learning</div><a class="suite-menu-link" href="danish_lesson.html">Danish Lesson Lab</a><a class="suite-menu-link" href="Learn_Danish_v2_2026-10-14.xlsx">Danish workbook</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Health &amp; Performance</div><a aria-current="page" class="suite-menu-link active" href="longevity_hacks.html">Longevity Hacks</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Personal Systems</div><a class="suite-menu-link" href="focus_console.html">Focus Console</a><a class="suite-menu-link" href="decision_journal.html">Decision Journal</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">AI &amp; Projects</div><a class="suite-menu-link" href="radu_context.html">Radu Context</a><a class="suite-menu-link" href="project_portfolio.html">Project Portfolio</a></div></div></details><span class="suite-menu-current">Health &amp; Performance · Longevity Hacks</span></nav>
+<main class="wrap">
+<header>
+<div>
+<h1>Longevity Hacks</h1>
+<div class="subtitle">Practical habits and tools · ranked by expected usefulness · personal notes saved locally</div>
+</div>
+<button class="primary" id="exportNotes">Export notes</button>
+</header>
+<p class="daily-idea"><strong>Today’s brief idea:</strong> <span data-daily-longevity></span> <a data-daily-longevity-source href="https://www.nia.nih.gov/health/healthy-aging/what-do-we-know-about-healthy-aging">Source</a> <a href="focus_console.html">Daily energy check</a></p><div class="controls">
+<input id="search" placeholder="Filter hacks, utility, timing..." type="search"/>
+<button id="clearNotes">Clear personal notes</button>
+</div>
+<div class="card">
+<table>
+<thead>
+<tr>
+<th>Rank</th>
+<th>Longevity hack</th>
+<th>Price</th>
+<th>Utility</th>
+<th>Best time / frequency</th>
+<th>Personal notes</th>
+</tr>
+</thead>
+<tbody id="hackRows"><tr data-search="consistent sleep schedule free very high evening / fixed wake time">
+<td class="rank">1</td>
+<td><strong>Consistent sleep schedule</strong></td>
+<td class="price">Free</td>
+<td class="utility"><span class="utility-pill">Very high</span></td>
+<td class="time">Evening / fixed wake time</td>
+<td><textarea class="note-input" data-note="0" placeholder="Your notes..."></textarea></td>
+</tr>
+
+<tr data-search="strength training free–moderate very high 2–4×/week">
+<td class="rank">2</td>
+<td><strong>Strength training</strong></td>
+<td class="price">Free–moderate</td>
+<td class="utility"><span class="utility-pill">Very high</span></td>
+<td class="time">2–4×/week</td>
+<td><textarea class="note-input" data-note="1" placeholder="Your notes..."></textarea></td>
+</tr>
+
+<tr data-search="daily movement / walking free very high throughout day">
+<td class="rank">3</td>
+<td><strong>Daily movement / walking</strong></td>
+<td class="price">Free</td>
+<td class="utility"><span class="utility-pill">Very high</span></td>
+<td class="time">Throughout day</td>
+<td><textarea class="note-input" data-note="2" placeholder="Your notes..."></textarea></td>
+</tr>
+
+<tr data-search="cardiorespiratory exercise free–moderate very high morning / daytime">
+<td class="rank">4</td>
+<td><strong>Cardiorespiratory exercise</strong></td>
+<td class="price">Free–moderate</td>
+<td class="utility"><span class="utility-pill">Very high</span></td>
+<td class="time">Morning / daytime</td>
+<td><textarea class="note-input" data-note="3" placeholder="Your notes..."></textarea></td>
+</tr>
+
+<tr data-search="protein + plant-rich diet food budget very high across meals">
+<td class="rank">5</td>
+<td><strong>Protein + plant-rich diet</strong></td>
+<td class="price">Food budget</td>
+<td class="utility"><span class="utility-pill">Very high</span></td>
+<td class="time">Across meals</td>
+<td><textarea class="note-input" data-note="4" placeholder="Your notes..."></textarea></td>
+</tr>
+
+<tr data-search="remove major accelerators: smoking, excess alcohol, inactivity free–variable very high always">
+<td class="rank">6</td>
+<td><strong>Remove major accelerators: smoking, excess alcohol, inactivity</strong></td>
+<td class="price">Free–variable</td>
+<td class="utility"><span class="utility-pill">Very high</span></td>
+<td class="time">Always</td>
+<td><textarea class="note-input" data-note="7" placeholder="Your notes..."></textarea></td>
+</tr>
+
+<tr data-search="avoid chronic calorie surplus free high all day">
+<td class="rank">7</td>
+<td><strong>Avoid chronic calorie surplus</strong></td>
+<td class="price">Free</td>
+<td class="utility"><span class="utility-pill">High</span></td>
+<td class="time">All day</td>
+<td><textarea class="note-input" data-note="5" placeholder="Your notes..."></textarea></td>
+</tr>
+
+<tr data-search="track key health biomarkers low–moderate high periodic">
+<td class="rank">8</td>
+<td><strong>Track key health biomarkers</strong></td>
+<td class="price">Low–moderate</td>
+<td class="utility"><span class="utility-pill">High</span></td>
+<td class="time">Periodic</td>
+<td><textarea class="note-input" data-note="6" placeholder="Your notes..."></textarea></td>
+</tr>
+
+<tr data-search="morning outdoor light free high soon after waking">
+<td class="rank">9</td>
+<td><strong>Morning outdoor light</strong></td>
+<td class="price">Free</td>
+<td class="utility"><span class="utility-pill">High</span></td>
+<td class="time">Soon after waking</td>
+<td><textarea class="note-input" data-note="8" placeholder="Your notes..."></textarea></td>
+</tr>
+
+<tr data-search="resistance + impact / bone loading free–moderate high daytime">
+<td class="rank">10</td>
+<td><strong>Resistance + impact / bone loading</strong></td>
+<td class="price">Free–moderate</td>
+<td class="utility"><span class="utility-pill">High</span></td>
+<td class="time">Daytime</td>
+<td><textarea class="note-input" data-note="9" placeholder="Your notes..."></textarea></td>
+</tr>
+
+<tr data-search="sauna / heat exposure moderate moderate afternoon / evening">
+<td class="rank">11</td>
+<td><strong>Sauna / heat exposure</strong></td>
+<td class="price">Moderate</td>
+<td class="utility"><span class="utility-pill">Moderate</span></td>
+<td class="time">Afternoon / evening</td>
+<td><textarea class="note-input" data-note="10" placeholder="Your notes..."></textarea></td>
+</tr>
+
+<tr data-search="omega-3-rich foods / supplement if appropriate low–moderate moderate with meals">
+<td class="rank">12</td>
+<td><strong>Omega-3-rich foods / supplement if appropriate</strong></td>
+<td class="price">Low–moderate</td>
+<td class="utility"><span class="utility-pill">Moderate</span></td>
+<td class="time">With meals</td>
+<td><textarea class="note-input" data-note="11" placeholder="Your notes..."></textarea></td>
+</tr>
+
+<tr data-search="creatine low moderate any consistent time">
+<td class="rank">13</td>
+<td><strong>Creatine</strong></td>
+<td class="price">Low</td>
+<td class="utility"><span class="utility-pill">Moderate</span></td>
+<td class="time">Any consistent time</td>
+<td><textarea class="note-input" data-note="12" placeholder="Your notes..."></textarea></td>
+</tr>
+
+<tr data-search="warm tv picture mode free useful for sleep hygiene evening">
+<td class="rank">14</td>
+<td><strong>Warm TV picture mode</strong></td>
+<td class="price">Free</td>
+<td class="utility"><span class="utility-pill">Useful for sleep hygiene</span></td>
+<td class="time">Evening</td>
+<td><textarea class="note-input" data-note="13" placeholder="Your notes..."></textarea></td>
+</tr>
+
+<tr data-search="f.lux / warm computer display free useful for sleep hygiene evening / sunset onward">
+<td class="rank">15</td>
+<td><strong>f.lux / warm computer display</strong></td>
+<td class="price">Free</td>
+<td class="utility"><span class="utility-pill">Useful for sleep hygiene</span></td>
+<td class="time">Evening / sunset onward</td>
+<td><textarea class="note-input" data-note="14" placeholder="Your notes..."></textarea></td>
+</tr>
+
+<tr data-search="philips hue warm lighting existing smart lights / moderate useful for sleep hygiene evening">
+<td class="rank">16</td>
+<td><strong>Philips Hue warm lighting</strong></td>
+<td class="price">Existing smart lights / moderate</td>
+<td class="utility"><span class="utility-pill">Useful for sleep hygiene</span></td>
+<td class="time">Evening</td>
+<td><textarea class="note-input" data-note="15" placeholder="Your notes..."></textarea></td>
+</tr>
+
+<tr data-search="progressive lights-off routine free with smart lights useful behavioral cue final 30 min before bed">
+<td class="rank">17</td>
+<td><strong>Progressive lights-off routine</strong></td>
+<td class="price">Free with smart lights</td>
+<td class="utility"><span class="utility-pill">Useful behavioral cue</span></td>
+<td class="time">Final 30 min before bed</td>
+<td><textarea class="note-input" data-note="16" placeholder="Your notes..."></textarea></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="foot">
+  This is a personal planning table rather than medical advice. The ranking is deliberately practical: the highest positions favor broad, well-established behaviors over expensive or speculative interventions. Your evening-light additions are included as sleep-support habits. Daily ideas rotate without changing this list. <a href="https://www.nia.nih.gov/health/healthy-aging/what-do-we-know-about-healthy-aging">Healthy aging guidance</a> · <a href="https://www.nia.nih.gov/health/sleep/sleep-and-older-adults">Sleep guidance</a> · <a href="https://www.who.int/news-room/fact-sheets/detail/physical-activity">Physical activity guidance</a>.
+</div>
+</main>
+<script src="daily_longevity.js"></script><script>
+const NOTE_KEY='longevity_hacks_personal_notes_v1';
+const notes=(()=>{try{return JSON.parse(localStorage.getItem(NOTE_KEY))||{}}catch{return{}}})();
+document.querySelectorAll('.note-input').forEach(el=>{
+  el.value=notes[el.dataset.note]||'';
+  el.addEventListener('input',()=>{
+    notes[el.dataset.note]=el.value;
+    localStorage.setItem(NOTE_KEY,JSON.stringify(notes));
+  });
+});
+document.getElementById('search').addEventListener('input',e=>{
+  const q=e.target.value.trim().toLowerCase();
+  document.querySelectorAll('#hackRows tr').forEach(tr=>{
+    tr.style.display=!q||tr.dataset.search.includes(q)?'':'none';
+  });
+});
+document.getElementById('clearNotes').onclick=()=>{
+  if(!confirm('Clear all personal longevity notes?'))return;
+  localStorage.removeItem(NOTE_KEY);
+  document.querySelectorAll('.note-input').forEach(x=>x.value='');
+  Object.keys(notes).forEach(k=>delete notes[k]);
+};
+document.getElementById('exportNotes').onclick=()=>{
+  const payload={exportedAt:new Date().toISOString(),notes};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='longevity-hacks-notes.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Radu Context Builder</title><style>
+:root{--blue:#2563eb;--ink:#1e293b;--muted:#64748b;--line:#e2e8f0;--soft:#f8fafc;--green:#18794e;--amber:#9a5b00;--red:#a33a3a;--violet:#6d51bd}*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.suite-nav{max-width:1240px;margin:15px auto 0;padding:0 18px;display:flex;gap:8px;flex-wrap:wrap}.suite-nav a{color:#334155;text-decoration:none;border:1px solid var(--line);padding:9px 13px;border-radius:10px;font-size:13px;font-weight:700}.suite-nav .active{background:var(--blue);color:#fff}.wrap{max-width:1240px;margin:auto;padding:28px 18px 60px}header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}h1{margin:0 0 7px;font-size:34px;letter-spacing:-.035em}h2{font-size:19px;margin:0 0 12px}h3{font-size:15px;margin:0 0 8px}.subtitle,.hint{color:var(--muted);font-size:13px;line-height:1.55}.actions{display:flex;gap:8px;flex-wrap:wrap}button{cursor:pointer;font:inherit;border:1px solid var(--line);border-radius:9px;background:#fff;padding:9px 13px;color:var(--ink)}button.primary{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:750}button.danger{color:var(--red)}button:hover{filter:brightness(.985)}.layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(330px,.85fr);gap:18px}.card{border:1px solid var(--line);border-radius:15px;background:#fff;padding:20px;margin-bottom:14px;box-shadow:0 5px 16px #1b34500a}.soft{background:var(--soft)}label{font-size:13px;display:block;margin:12px 0 6px;font-weight:750}input,textarea,select{width:100%;font:inherit;font-size:14px;color:var(--ink);background:#fff;border:1px solid #cbd5e1;border-radius:9px;padding:10px;min-width:0}textarea{min-height:78px;resize:vertical}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.pill{display:inline-block;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:750;background:#eef4ff;color:#245fbd}.warn{background:#fff8ed;border:1px solid #f0d8ad;color:#7b531c;padding:11px 12px;border-radius:10px;font-size:12px;line-height:1.5;margin:8px 0}.ok{background:#eef9f3;border:1px solid #cde8d8;color:#1b6744;padding:11px 12px;border-radius:10px;font-size:12px;line-height:1.5;margin:8px 0}.error{background:#fff2f2;border:1px solid #edcccc;color:#8d3434;padding:11px 12px;border-radius:10px;font-size:12px;line-height:1.5;margin:8px 0}.preview{white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;line-height:1.55;background:#0f172a;color:#dbeafe;border-radius:12px;padding:16px;max-height:680px;overflow:auto}.sticky{position:sticky;top:12px}.counter{font-size:12px;color:var(--muted);margin-top:7px}.question{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}.checkline{display:flex;gap:9px;align-items:flex-start;margin:9px 0;font-size:13px}.checkline input{width:auto;margin-top:3px}.tagline{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.sr-only{position:absolute;left:-9999px}.callout{border-left:4px solid var(--blue);padding:10px 12px;background:#f8fbff;border-radius:8px;font-size:13px;line-height:1.55}.small{font-size:12px}.source{font-size:12px;color:var(--muted);line-height:1.5}.source a{color:var(--blue)}@media(max-width:900px){.layout{grid-template-columns:1fr}.sticky{position:static}.grid3{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
+</style><style>
+/* Family Suite v13 categorized navigation */
+.suite-menu-bar{position:relative;z-index:10000;display:flex;align-items:center;gap:12px;padding:10px 14px;margin:0 0 12px;border:1px solid rgba(148,163,184,.22);border-radius:14px;background:rgba(15,23,42,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 8px 24px rgba(0,0,0,.12);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#e5e7eb}
+.suite-menu-bar a{text-decoration:none}
+.suite-menu{position:relative}
+.suite-menu>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;font-size:14px;font-weight:800;letter-spacing:.01em;color:#f8fafc;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);user-select:none}
+.suite-menu>summary::-webkit-details-marker{display:none}
+.suite-menu>summary:hover{background:rgba(255,255,255,.12)}
+.suite-menu[open]>summary{background:rgba(56,189,248,.14);border-color:rgba(56,189,248,.30)}
+.suite-menu-current{font-size:12px;font-weight:700;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.suite-menu-panel{position:absolute;top:calc(100% + 8px);left:0;width:min(340px,calc(100vw - 28px));max-height:76vh;overflow:auto;padding:10px;border-radius:14px;background:#0f172a;border:1px solid rgba(148,163,184,.28);box-shadow:0 24px 55px rgba(0,0,0,.32)}
+.suite-menu-category{padding:8px 6px 10px;border-bottom:1px solid rgba(148,163,184,.14)}
+.suite-menu-category:last-child{border-bottom:0}
+.suite-menu-category-title{padding:0 8px 5px;font-size:10px;line-height:1.2;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#64748b}
+.suite-menu-link{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 9px;border-radius:9px;color:#dbeafe;font-size:13px;font-weight:650}
+.suite-menu-link:hover{background:rgba(148,163,184,.12);color:#fff}
+.suite-menu-link.active{background:rgba(56,189,248,.16);color:#7dd3fc}
+.suite-menu-link.active::after{content:"Current";font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#38bdf8}
+@media (max-width:640px){.suite-menu-bar{margin-bottom:10px;border-radius:12px}.suite-menu-current{display:none}.suite-menu-panel{max-height:72vh}}
+</style><style>.suite-menu{border:0;background:transparent;padding:0;margin:0}.suite-menu>summary{line-height:1.3}</style></head><body><nav aria-label="Family Suite navigation" class="suite-menu-bar"><details class="suite-menu"><summary><span aria-hidden="true">☰</span><span>Family Suite</span><span aria-hidden="true">▾</span></summary><div class="suite-menu-panel"><div class="suite-menu-category"><div class="suite-menu-category-title">Start</div><a class="suite-menu-link" href="new_tab.html">New Tab</a><a class="suite-menu-link" href="family_hub.html">Family Hub</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Family</div><a class="suite-menu-link" href="family_week.html">Family Week</a><a class="suite-menu-link" href="maintenance.html">Maintenance</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Finances</div><a class="suite-menu-link" href="family_wealth.html">Family Wealth</a><a class="suite-menu-link" href="investment_rules.html">Investment Rules</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Learning</div><a class="suite-menu-link" href="danish_lesson.html">Danish Lesson Lab</a><a class="suite-menu-link" href="Learn_Danish_v2_2026-10-14.xlsx">Danish workbook</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Health &amp; Performance</div><a class="suite-menu-link" href="longevity_hacks.html">Longevity Hacks</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Personal Systems</div><a class="suite-menu-link" href="focus_console.html">Focus Console</a><a class="suite-menu-link" href="decision_journal.html">Decision Journal</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">AI &amp; Projects</div><a aria-current="page" class="suite-menu-link active" href="radu_context.html">Radu Context</a><a class="suite-menu-link" href="project_portfolio.html">Project Portfolio</a></div></div></details><span class="suite-menu-current">AI &amp; Projects · Radu Context</span></nav><main class="wrap">
+<header><div><span class="pill">AI context · local-first</span><h1>RADU_CONTEXT.md Builder</h1><p class="subtitle">Build a concise reusable context file for ChatGPT and Codex. Permanent context stays separate from project-specific context; only information that materially improves output belongs here.</p></div><div class="actions"><button id="loadBtn">Load .md</button><button class="primary" id="downloadBtn">Save RADU_CONTEXT.md</button><input accept=".md,text/markdown,text/plain" class="sr-only" id="loadFile" type="file"/></div></header>
+<div class="layout"><section>
+<div class="card"><h2>About Me</h2><label>Name / preferred address</label><input data-key="name" value="Radu"/><label>Useful stable context</label><textarea data-key="about">Mechanical engineer based near Copenhagen, Denmark. Interested in science, philosophy, psychology, photography, board games, practical self-improvement and family projects.</textarea><p class="hint">Avoid IDs, account numbers, passwords, detailed medical information, or anything an AI does not need for the work.</p></div>
+<div class="card"><h2>How I Work</h2><textarea data-key="work">Prefer requirements → mechanisms → constraints → trade-offs → failure modes → verification. Optimize for truth, relevance and usefulness rather than agreement. Distinguish established facts, evidence-based inference, uncertainty, speculation and opinion. Challenge assumptions only when they could materially change the conclusion.</textarea></div>
+<div class="card"><h2>Engineering Context</h2><label>Stable engineering context</label><textarea data-key="engineering">Mechanical engineering and computer-aided design. For technical work, make assumptions explicit, keep units consistent, identify uncertain claims, do not invent engineering values, and verify results where practical.</textarea><div class="question"><h3>Only fill these if they matter often</h3><label>Primary CAD / CAE / PLM tools</label><input data-key="cad" placeholder="e.g. specific CAD, simulation, PLM tools"/><label>Coding / automation environment</label><input data-key="coding" placeholder="e.g. Python, C#, TypeScript, Windows, GitHub"/><label>Typical engineering outputs</label><input data-key="outputs" placeholder="e.g. scripts, design checks, test plans, calculations"/></div></div>
+<div class="card"><h2>Learning &amp; Personal Projects</h2><textarea data-key="learning">Intermediate Danish learning; AI and agent experiments; personal systems; long-term investing; health and longevity; philosophy and psychology; family activities. Prefer small practical experiments that produce tangible results.</textarea></div>
+<div class="card"><h2>Rules for Answers</h2><textarea data-key="rules">Use evidence appropriate to the question. Explain mechanisms, not just observations. For consequential conclusions, state what evidence would change the conclusion. For technical work: assumptions explicit; units consistent; uncertain claims identified; calculations and outputs verified where possible. Prefer concise cohesive prose; use tables or lists only when they improve decisions.</textarea></div>
+<div class="card"><h2>Project Context <span class="pill">changes per project</span></h2><label>Project goal</label><textarea data-key="projectGoal" placeholder="What should this specific project achieve?"></textarea><div class="grid2"><div><label>Inputs / files / systems</label><textarea data-key="projectInputs" placeholder="Relevant files, APIs, tools, data"></textarea></div><div><label>Definition of done</label><textarea data-key="projectDone" placeholder="Observable acceptance criteria"></textarea></div></div><label>Project constraints</label><textarea data-key="projectConstraints" placeholder="Time, compatibility, safety, scope, performance, output format"></textarea></div>
+</section><aside><div class="sticky"><div class="card"><h2>Missing information interview</h2><div id="questions"></div><p class="hint">This panel only asks about blanks that could materially improve future AI/Codex work. Leaving a field blank is valid if it is not useful across projects.</p></div><div class="card"><h2>Generated file</h2><div class="preview" id="contextPreview"></div><div class="counter" id="wordCount"></div></div></div></aside></div></main>
+<script>
+const KEY='radu_context_builder_v1';
+const fields=[...document.querySelectorAll('[data-key]')];
+function state(){return Object.fromEntries(fields.map(x=>[x.dataset.key,x.value.trim()]))}
+function setState(o){fields.forEach(x=>{if(o[x.dataset.key]!==undefined)x.value=o[x.dataset.key]})}
+function generate(){
+  const d=state();
+  const parts=['# RADU_CONTEXT'];
+  const sec=(h,v)=>{if(v)parts.push(`## ${h}\n${v}`)};
+  sec('About Me',[d.name&&`Preferred name: ${d.name}.`,d.about].filter(Boolean).join(' '));
+  sec('How I Work',d.work);
+  sec('Engineering Context',[d.engineering,d.cad&&`Primary tools: ${d.cad}.`,d.coding&&`Coding/automation: ${d.coding}.`,d.outputs&&`Typical outputs: ${d.outputs}.`].filter(Boolean).join('\n'));
+  sec('Learning & Personal Projects',d.learning);
+  sec('Rules for Answers',d.rules);
+  const pc=[d.projectGoal&&`Goal: ${d.projectGoal}`,d.projectInputs&&`Inputs/systems: ${d.projectInputs}`,d.projectConstraints&&`Constraints: ${d.projectConstraints}`,d.projectDone&&`Definition of done: ${d.projectDone}`].filter(Boolean).join('\n');
+  parts.push(`## Project Context\n${pc||'_Fill this section for each project; keep the sections above stable._'}`);
+  return parts.join('\n\n')+'\n';
+}
+function render(){
+  localStorage.setItem(KEY,JSON.stringify(state()));
+  const md=generate(); contextPreview.textContent=md;
+  const n=(md.match(/\b[\w’'-]+\b/g)||[]).length;
+  wordCount.textContent=`${n} words · target < 1,000`;
+  const d=state(), qs=[];
+  if(!d.cad)qs.push('<div class="warn"><strong>Primary engineering tools?</strong><br>Add CAD/CAE/PLM tools only if they recur often enough to change technical advice.</div>');
+  if(!d.coding)qs.push('<div class="warn"><strong>Coding environment?</strong><br>Add languages, OS or automation tools only if they affect implementation choices.</div>');
+  if(!d.outputs)qs.push('<div class="warn"><strong>Typical outputs?</strong><br>Useful if you repeatedly want the same deliverables, such as scripts, test plans or calculations.</div>');
+  if(!qs.length)qs.push('<div class="ok">No important permanent-context gaps detected. Use Project Context for anything specific to the current task.</div>');
+  questions.innerHTML=qs.join('');
+}
+fields.forEach(x=>x.addEventListener('input',render));
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)setState(s)}catch(e){}
+render();
+function download(name,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/markdown'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+downloadBtn.onclick=()=>download('RADU_CONTEXT.md',generate());
+loadBtn.onclick=()=>loadFile.click();
+loadFile.onchange=async()=>{
+  const f=loadFile.files[0];if(!f)return;const t=await f.text();
+  const get=(h)=>{const re=new RegExp('## '+h+'\\n([\\s\\S]*?)(?=\\n\\n## |$)');const m=t.match(re);return m?m[1].trim():''};
+  const d={};
+  d.about=get('About Me').replace(/^Preferred name:\s*([^\.]+)\.\s*/i,(m,n)=>{d.name=n.trim();return ''});
+  d.work=get('How I Work'); d.engineering=get('Engineering Context'); d.learning=get('Learning & Personal Projects'); d.rules=get('Rules for Answers');
+  const pc=get('Project Context');
+  d.projectGoal=(pc.match(/^Goal:\s*(.*)$/m)||[])[1]||'';
+  d.projectInputs=(pc.match(/^Inputs\/systems:\s*(.*)$/m)||[])[1]||'';
+  d.projectConstraints=(pc.match(/^Constraints:\s*(.*)$/m)||[])[1]||'';
+  d.projectDone=(pc.match(/^Definition of done:\s*(.*)$/m)||[])[1]||'';
+  setState(d);render();loadFile.value='';
+};
+
+</script></body></html>

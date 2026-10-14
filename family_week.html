@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Family Week</title>
+<style>
+:root{
+  --ink:#2a2f33;--muted:#727b84;--line:#e6e7e9;--blue:#2563eb;
+  --p1:#4f8bd6;--p2:#74c69d;--p3:#a78bfa;--p4:#f28482;--family:#f6c453;
+  --hourH:64px
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:#fff;color:var(--ink)}
+.suite-nav{max-width:1320px;margin:14px auto 0;padding:0 18px;display:flex;gap:8px;flex-wrap:wrap}
+.suite-nav a{text-decoration:none;color:#334155;border:1px solid var(--line);background:#fff;padding:9px 13px;border-radius:10px;font-weight:700;font-size:13px}
+.suite-nav a.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.wrap{max-width:1320px;margin:auto;padding:28px 18px 52px}
+header{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}
+h1{margin:0 0 6px}.sub{color:var(--muted)}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 14px}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:#fff;padding:10px 13px;border-radius:10px}
+button.primary{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:700}
+.tab.active{background:#fff7e8;border-color:#f0c36a}
+.card{border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 10px 28px rgba(15,23,42,.04)}
+.toolbar{padding:16px;display:flex;justify-content:space-between;gap:12px;align-items:end;flex-wrap:wrap;margin-bottom:14px}
+input,select{font:inherit;border:1px solid var(--line);border-radius:9px;padding:9px 10px;background:#fff;width:100%}
+.summaryCard{padding:16px;margin-bottom:14px;background:#fffdfa}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:4px}
+
+.calendar-shell{border:1px solid var(--line);border-radius:16px;overflow:auto;background:#fff}
+.calendar-grid{display:grid;grid-template-columns:72px repeat(7,minmax(150px,1fr));min-width:1120px;position:relative}
+.time-head,.day-head{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);padding:10px;font-weight:700}
+.time-head{left:0;z-index:7;border-right:1px solid var(--line)}
+.day-head{text-align:center;border-right:1px solid var(--line)}
+.time-slot{height:var(--hourH);border-bottom:1px solid var(--line);padding:4px 8px;color:var(--muted);font-size:11px}
+.time-col{position:sticky;left:0;z-index:4;background:#fff;border-right:1px solid var(--line)}
+.hour-click{height:var(--hourH);position:relative;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.event-block{
+  position:absolute;border-radius:8px;padding:5px 7px;font-size:11px;
+  border-left:4px solid var(--p1);background:#f8fbff;overflow:hidden;cursor:pointer;z-index:3;
+  box-shadow:0 1px 2px rgba(15,23,42,.05)
+}
+.event-block strong{display:block;font-size:11px;line-height:1.15}
+.event-block .meta{color:var(--muted);font-size:9px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.event-block.compact strong{font-size:10px}.event-block.compact .meta{display:none}
+
+.overlay{position:fixed;inset:0;background:#0f172a66;display:none;align-items:center;justify-content:center;padding:18px;z-index:20}
+.overlay.show{display:flex}.modal{width:min(580px,100%);background:#fff;border-radius:16px;padding:20px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:block;font-size:12px;color:var(--muted);margin:9px 0 5px}
+.modal-actions{margin-top:14px;text-align:right}.small{font-size:11px;color:var(--muted)}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+</style>
+<style>
+/* Family Suite v13 categorized navigation */
+.suite-menu-bar{position:relative;z-index:10000;display:flex;align-items:center;gap:12px;padding:10px 14px;margin:0 0 12px;border:1px solid rgba(148,163,184,.22);border-radius:14px;background:rgba(15,23,42,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 8px 24px rgba(0,0,0,.12);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#e5e7eb}
+.suite-menu-bar a{text-decoration:none}
+.suite-menu{position:relative}
+.suite-menu>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;font-size:14px;font-weight:800;letter-spacing:.01em;color:#f8fafc;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);user-select:none}
+.suite-menu>summary::-webkit-details-marker{display:none}
+.suite-menu>summary:hover{background:rgba(255,255,255,.12)}
+.suite-menu[open]>summary{background:rgba(56,189,248,.14);border-color:rgba(56,189,248,.30)}
+.suite-menu-current{font-size:12px;font-weight:700;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.suite-menu-panel{position:absolute;top:calc(100% + 8px);left:0;width:min(340px,calc(100vw - 28px));max-height:76vh;overflow:auto;padding:10px;border-radius:14px;background:#0f172a;border:1px solid rgba(148,163,184,.28);box-shadow:0 24px 55px rgba(0,0,0,.32)}
+.suite-menu-category{padding:8px 6px 10px;border-bottom:1px solid rgba(148,163,184,.14)}
+.suite-menu-category:last-child{border-bottom:0}
+.suite-menu-category-title{padding:0 8px 5px;font-size:10px;line-height:1.2;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#64748b}
+.suite-menu-link{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 9px;border-radius:9px;color:#dbeafe;font-size:13px;font-weight:650}
+.suite-menu-link:hover{background:rgba(148,163,184,.12);color:#fff}
+.suite-menu-link.active{background:rgba(56,189,248,.16);color:#7dd3fc}
+.suite-menu-link.active::after{content:"Current";font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#38bdf8}
+@media (max-width:640px){.suite-menu-bar{margin-bottom:10px;border-radius:12px}.suite-menu-current{display:none}.suite-menu-panel{max-height:72vh}}
+</style><style>.repeat-days{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}.repeat-days label{display:flex;gap:4px;align-items:center}.repeat-days input{width:auto}.modal{max-height:92vh;overflow:auto}</style><style>.suite-menu{border:0;background:transparent;padding:0;margin:0}.suite-menu>summary{line-height:1.3}</style></head>
+<body><nav aria-label="Family Suite navigation" class="suite-menu-bar"><details class="suite-menu"><summary><span aria-hidden="true">☰</span><span>Family Suite</span><span aria-hidden="true">▾</span></summary><div class="suite-menu-panel"><div class="suite-menu-category"><div class="suite-menu-category-title">Start</div><a class="suite-menu-link" href="new_tab.html">New Tab</a><a class="suite-menu-link" href="family_hub.html">Family Hub</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Family</div><a aria-current="page" class="suite-menu-link active" href="family_week.html">Family Week</a><a class="suite-menu-link" href="maintenance.html">Maintenance</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Finances</div><a class="suite-menu-link" href="family_wealth.html">Family Wealth</a><a class="suite-menu-link" href="investment_rules.html">Investment Rules</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Learning</div><a class="suite-menu-link" href="danish_lesson.html">Danish Lesson Lab</a><a class="suite-menu-link" href="Learn_Danish_v2_2026-10-14.xlsx">Danish workbook</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Health &amp; Performance</div><a class="suite-menu-link" href="longevity_hacks.html">Longevity Hacks</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">Personal Systems</div><a class="suite-menu-link" href="focus_console.html">Focus Console</a><a class="suite-menu-link" href="decision_journal.html">Decision Journal</a></div><div class="suite-menu-category"><div class="suite-menu-category-title">AI &amp; Projects</div><a class="suite-menu-link" href="radu_context.html">Radu Context</a><a class="suite-menu-link" href="project_portfolio.html">Project Portfolio</a></div></div></details><span class="suite-menu-current">Family · Family Week</span></nav>
+
+<div class="wrap">
+<header>
+<div>
+<h1>Family Week</h1>
+<div class="sub">Hourly family calendar · activities occupy their actual time range</div>
+</div>
+<div class="header-actions">
+<button id="renameBtn">Edit names</button>
+<button id="saveCalendarBtn">Save calendar</button>
+<button id="loadCalendarBtn">Load calendar</button>
+<input accept=".json,application/json" hidden="" id="calendarFileInput" type="file"/>
+<button id="addFamilyEventBtn">+ Family event</button><button class="primary" id="addEventBtn">+ Add activity</button>
+</div>
+</header>
+<div class="tabs" id="tabs"></div>
+<div class="card summaryCard"><div class="legend" id="legend"></div></div>
+<div class="card toolbar">
+<div><label>Week starting Monday</label><input id="weekStart" type="date"/></div>
+<div>
+<label>Visible hours</label>
+<div style="display:flex;gap:6px;align-items:center">
+<select id="startHour" style="width:auto"></select><span class="small">to</span><select id="endHour" style="width:auto"></select>
+</div>
+</div>
+<div><button id="prevWeek">← Previous</button> <button id="thisWeek">This week</button> <button id="nextWeek">Next →</button></div>
+</div>
+<div class="calendar-shell"><div class="calendar-grid" id="calendarGrid"></div></div>
+</div>
+<div class="overlay" id="namesOverlay">
+<div class="modal">
+<h3>Edit family names</h3>
+<div class="grid2"><div><label>Person 1</label><input id="name0"/></div><div><label>Person 2</label><input id="name1"/></div></div>
+<div class="grid2"><div><label>Person 3</label><input id="name2"/></div><div><label>Person 4</label><input id="name3"/></div></div>
+<div class="modal-actions"><button id="cancelNames">Cancel</button> <button class="primary" id="saveNames">Save names</button></div>
+</div>
+</div>
+<div class="overlay" id="eventOverlay">
+<div class="modal">
+<h3>Add / edit activity</h3>
+<div class="grid2">
+<div><label>Calendar</label><select id="person"></select></div>
+<div><label>Type</label><select id="type"><option>Activity</option><option>Work hours</option><option>Family visit</option><option>Family event</option><option>School</option><option>Appointment</option><option>Other</option></select></div>
+</div>
+<div class="grid2"><div><label>Date</label><input id="date" type="date"/></div><div><label>Start time</label><input id="start" type="time"/></div></div>
+<div class="grid2"><div><label>End time</label><input id="end" type="time"/></div><div><label>Title</label><input id="title" placeholder="e.g. Work, squash, grandparents visit"/></div></div>
+<div class="grid2"><div><label for="repeat">Repeat</label><select id="repeat"><option value="none">Does not repeat</option><option value="daily">Daily</option><option value="weekdays">Weekdays</option><option value="weekly">Weekly on selected days</option><option value="monthly">Monthly on the same date</option></select></div><div><label for="repeatUntil">Repeat until (optional)</label><input id="repeatUntil" type="date"/></div></div>
+<div id="repeatDays" style="display:none"><label>Weekly days</label><div class="repeat-days"><label><input type="checkbox" value="0"/>Sun</label><label><input type="checkbox" value="1"/>Mon</label><label><input type="checkbox" value="2"/>Tue</label><label><input type="checkbox" value="3"/>Wed</label><label><input type="checkbox" value="4"/>Thu</label><label><input type="checkbox" value="5"/>Fri</label><label><input type="checkbox" value="6"/>Sat</label></div></div><p class="small" id="seriesNote">Monthly repeats skip months without that date. Editing a repeat changes the whole series.</p>
+<label>Notes</label><input id="notes" placeholder="Optional details"/><button id="skipOccurrence" style="display:none;margin-top:8px">Skip this occurrence</button>
+<div class="modal-actions"><button id="deleteEvent" style="float:left;display:none">Delete</button><button id="cancelEvent">Cancel</button> <button class="primary" id="saveEvent">Save</button></div>
+</div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const K='family_week_suite_v3', OLDK='family_week_suite_v2';
+const COLORS=['#4f8bd6','#74c69d','#a78bfa','#f28482','#f6c453'];
+const HOUR_HEIGHT=64, HEADER_HEIGHT=41;
+let data=loadData(), tab='shared', editingId=null, editingOccurrence=null, calendarRender=0;
+
+function defaultData(){return {version:4,names:['Person 1','Person 2','Person 3','Person 4'],events:[],settings:{startHour:6,endHour:22}}}
+function normalizeData(x){
+  const names=[0,1,2,3].map(i=>String((x.names||[])[i]||('Person '+(i+1))));
+  const events=(x.events||[]).map((e,idx)=>({
+    id:String(e.id||('e_'+Date.now()+'_'+idx)),person:e.person==='family'?'family':String(Math.max(0,Math.min(3,Number(e.person)||0))),
+    type:String(e.type||'Activity'),date:String(e.date||''),start:String(e.start||''),end:String(e.end||''),title:String(e.title||'Untitled'),notes:String(e.notes||''),repeat:['daily','weekdays','weekly','monthly'].includes(e.repeat)?e.repeat:'none',repeatUntil:String(e.repeatUntil||''),repeatDays:Array.isArray(e.repeatDays)?e.repeatDays.map(Number).filter(n=>n>=0&&n<=6):[],exceptions:Array.isArray(e.exceptions)?e.exceptions.filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)):[]
+  }));
+  return {version:4,names,events,settings:{startHour:Number(x.settings?.startHour??6),endHour:Number(x.settings?.endHour??22)}};
+}
+function loadData(){
+  for(const key of [K,OLDK]){
+    try{const x=JSON.parse(localStorage.getItem(key));if(x&&Array.isArray(x.names)&&Array.isArray(x.events))return normalizeData(x)}catch{}
+  }
+  return defaultData();
+}
+function save(){localStorage.setItem(K,JSON.stringify(data))}
+function monday(x=new Date()){const d=new Date(x);d.setHours(0,0,0,0);const day=d.getDay()||7;d.setDate(d.getDate()-day+1);return d}
+function localISO(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
+function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function timeToMinutes(t){if(!t||!/^\d{2}:\d{2}$/.test(t))return null;const [h,m]=t.split(':').map(Number);return h*60+m}
+function visible(e){return tab==='family'?e.person==='family':tab==='shared'||String(e.person)===tab||e.person==='family'}
+function occursOn(e,key){
+ if(e.repeat==='none'||!e.repeat)return e.date===key;
+ if(key<e.date||(e.repeatUntil&&key>e.repeatUntil)||(e.exceptions||[]).includes(key))return false;
+ const day=new Date(key+'T12:00:00').getDay(),anchor=new Date(e.date+'T12:00:00');
+ if(e.repeat==='daily')return true;
+ if(e.repeat==='weekdays')return day>=1&&day<=5;
+ if(e.repeat==='weekly')return (e.repeatDays?.length?e.repeatDays:[anchor.getDay()]).includes(day);
+ return e.repeat==='monthly'&&key.slice(8)===e.date.slice(8);
+}
+function syncRepeatDays(){ $('repeatDays').style.display=$('repeat').value==='weekly'?'block':'none'; }
+function setRepeatFields(e={}){
+ $('repeat').value=e.repeat||'none';$('repeatUntil').value=e.repeatUntil||'';
+ const date=e.date||$('date').value;const days=e.repeatDays?.length?e.repeatDays:[new Date(date+'T12:00:00').getDay()];
+ document.querySelectorAll('#repeatDays input').forEach(c=>c.checked=days.includes(Number(c.value)));syncRepeatDays();
+}
+
+
+function renderLegend(){
+  $('legend').innerHTML=data.names.map((n,i)=>`<span><i class="dot" style="background:${COLORS[i]}"></i>${esc(n)}</span>`).join('')+
+    `<span><i class="dot" style="background:${COLORS[4]}"></i>Family / visits</span>`;
+}
+function renderTabs(){
+  $('tabs').innerHTML='';
+  data.names.forEach((name,i)=>{
+    const b=document.createElement('button');b.className='tab '+(tab===String(i)?'active':'');b.textContent=name;
+    b.onclick=()=>{tab=String(i);renderTabs();renderCalendar()};$('tabs').appendChild(b);
+  });
+  const b=document.createElement('button');b.className='tab '+(tab==='shared'?'active':'');b.textContent='Shared Family';
+  b.onclick=()=>{tab='shared';renderTabs();renderCalendar()};$('tabs').appendChild(b);
+  const f=document.createElement('button');f.className='tab '+(tab==='family'?'active':'');f.textContent='Family events';f.onclick=()=>{tab='family';renderTabs();renderCalendar()};$('tabs').appendChild(f);
+}
+function initHours(){
+  $('startHour').innerHTML='';$('endHour').innerHTML='';
+  for(let h=0;h<=23;h++){
+    const label=String(h).padStart(2,'0')+':00';
+    $('startHour').innerHTML+=`<option value="${h}">${label}</option>`;
+    $('endHour').innerHTML+=`<option value="${h}">${label}</option>`;
+  }
+  $('startHour').value=data.settings.startHour;$('endHour').value=data.settings.endHour;
+}
+function renderCalendar(){
+  const startHour=Number($('startHour').value),endHour=Number($('endHour').value),startDate=new Date($('weekStart').value+'T00:00:00'),grid=$('calendarGrid');
+  const generation=++calendarRender;grid.innerHTML='';
+  const th=document.createElement('div');th.className='time-head';th.textContent='Time';grid.appendChild(th);
+  for(let d=0;d<7;d++){
+    const date=addDays(startDate,d),head=document.createElement('div');head.className='day-head';
+    head.innerHTML=date.toLocaleDateString([],{weekday:'short',day:'numeric',month:'short'});grid.appendChild(head);
+  }
+  for(let h=startHour;h<endHour;h++){
+    const time=document.createElement('div');time.className='time-slot time-col';time.textContent=String(h).padStart(2,'0')+':00';grid.appendChild(time);
+    for(let d=0;d<7;d++){
+      const key=localISO(addDays(startDate,d)),slot=document.createElement('div');slot.className='hour-click';slot.dataset.date=key;slot.dataset.hour=h;
+      slot.onclick=()=>openNewForSlot(key,h);grid.appendChild(slot);
+    }
+  }
+  requestAnimationFrame(()=>{
+    if(generation!==calendarRender)return;
+    for(let d=0;d<7;d++){
+      const key=localISO(addDays(startDate,d));
+      data.events.filter(e=>occursOn(e,key)&&visible(e)).forEach(e=>placeEvent({...e,occurrenceDate:key},d,startHour,endHour));
+    }
+  });
+}
+function placeEvent(e,dayIndex,startHour,endHour){
+  let sm=timeToMinutes(e.start),em=timeToMinutes(e.end);
+  if(sm===null)sm=startHour*60;if(em===null||em<=sm)em=sm+60;
+  const viewStart=startHour*60,viewEnd=endHour*60;if(em<=viewStart||sm>=viewEnd)return;
+  const clippedStart=Math.max(sm,viewStart),clippedEnd=Math.min(em,viewEnd);
+  const top=((clippedStart-viewStart)/60)*HOUR_HEIGHT, height=Math.max(14,((clippedEnd-clippedStart)/60)*HOUR_HEIGHT);
+  const grid=$('calendarGrid'),gridRect=grid.getBoundingClientRect();
+  const firstDayHeader=grid.children[1].getBoundingClientRect();
+  const colWidth=firstDayHeader.width, left=72+dayIndex*colWidth+5;
+
+  const block=document.createElement('div');block.className='event-block'+(height<32?' compact':'');
+  const ci=e.person==='family'?4:Number(e.person);block.style.borderLeftColor=COLORS[ci];
+  block.style.top=(HEADER_HEIGHT+top)+'px';block.style.height=height+'px';block.style.left=left+'px';block.style.width=(colWidth-10)+'px';
+  const who=e.person==='family'?'Family':data.names[Number(e.person)];
+  block.innerHTML=`<strong>${esc(e.title)}${e.repeat&&e.repeat!=='none'?' ↻':''}</strong><div class="meta">${esc(e.start||'')}–${esc(e.end||'')} · ${esc(who)}</div>`;
+  block.onclick=evt=>{evt.stopPropagation();openEdit(e.id,e.occurrenceDate)};grid.appendChild(block);
+}
+function refreshPersonOptions(){
+  const current=$('person').value;
+  $('person').innerHTML=data.names.map((n,i)=>`<option value="${i}">${esc(n)}</option>`).join('')+'<option value="family">Family / Shared</option>';
+  if([...$('person').options].some(o=>o.value===current))$('person').value=current;
+}
+function openNewForSlot(date,hour){
+  editingId=null;editingOccurrence=null;refreshPersonOptions();$('person').value=tab==='shared'?'family':tab;$('type').value='Activity';$('date').value=date;
+  $('start').value=String(hour).padStart(2,'0')+':00';$('end').value=String(Math.min(hour+1,23)).padStart(2,'0')+':00';
+  $('title').value='';$('notes').value='';setRepeatFields();$('skipOccurrence').style.display='none';$('deleteEvent').style.display='none';$('eventOverlay').classList.add('show');
+}
+function openNew(){openNewForSlot($('weekStart').value,Number($('startHour').value))}
+function openEdit(id,occurrenceDate){
+  editingOccurrence=occurrenceDate;
+  const e=data.events.find(x=>x.id===id);if(!e)return;editingId=id;refreshPersonOptions();$('person').value=e.person;$('type').value=e.type;
+  $('date').value=e.date;$('start').value=e.start;$('end').value=e.end;$('title').value=e.title;$('notes').value=e.notes||'';setRepeatFields(e);$('skipOccurrence').style.display=e.repeat&&e.repeat!=='none'?'inline-block':'none';
+  $('deleteEvent').style.display='inline-block';$('eventOverlay').classList.add('show');
+}
+function exportCalendar(){
+  const blob=new Blob([JSON.stringify({...data,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='family-week-calendar-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href);
+}
+function importCalendar(file){
+  const r=new FileReader();r.onload=()=>{try{
+    const parsed=normalizeData(JSON.parse(r.result));if(!confirm('Replace the current calendar with this saved calendar?'))return;
+    data=parsed;save();initHours();renderTabs();renderLegend();refreshPersonOptions();renderCalendar();alert('Calendar loaded successfully.');
+  }catch{alert('Could not load calendar.')}finally{$('calendarFileInput').value=''}};r.readAsText(file);
+}
+
+$('addFamilyEventBtn').onclick=()=>{openNew();$('person').value='family';$('type').value='Family event'};
+$('repeat').onchange=syncRepeatDays;
+$('date').onchange=()=>{if($('repeat').value==='weekly')setRepeatFields({repeat:'weekly',date:$('date').value})};
+$('skipOccurrence').onclick=()=>{const e=data.events.find(x=>x.id===editingId);if(!e||!editingOccurrence)return;if(!confirm('Skip only this occurrence on '+editingOccurrence+'?'))return;e.exceptions=[...new Set([...(e.exceptions||[]),editingOccurrence])];save();$('eventOverlay').classList.remove('show');renderCalendar()};
+$('addEventBtn').onclick=openNew;$('cancelEvent').onclick=()=>$('eventOverlay').classList.remove('show');
+$('saveEvent').onclick=()=>{
+  const item={id:editingId||('e_'+Date.now()),person:$('person').value,type:$('type').value,date:$('date').value,start:$('start').value,end:$('end').value,title:$('title').value.trim()||'Untitled',notes:$('notes').value.trim(),repeat:$('repeat').value,repeatUntil:$('repeatUntil').value,repeatDays:[...document.querySelectorAll('#repeatDays input:checked')].map(c=>Number(c.value)),exceptions:editingId?(data.events.find(e=>e.id===editingId)?.exceptions||[]):[]};
+  if(!item.date){alert('Choose a date.');return}
+  if(item.repeatUntil&&item.repeatUntil<item.date){alert('Repeat until must be on or after the first date.');return}
+  if(item.repeat==='weekly'&&!item.repeatDays.length){alert('Select at least one weekly day.');return}
+  const sm=timeToMinutes(item.start),em=timeToMinutes(item.end);if(sm!==null&&em!==null&&em<=sm){alert('End time must be after start time.');return}
+  if(editingId){const i=data.events.findIndex(x=>x.id===editingId);if(i>=0)data.events[i]=item}else data.events.push(item);
+  save();$('eventOverlay').classList.remove('show');renderCalendar();
+};
+$('deleteEvent').onclick=()=>{if(!editingId||!confirm('Delete this activity and its entire repeating series, if any?'))return;data.events=data.events.filter(e=>e.id!==editingId);save();$('eventOverlay').classList.remove('show');renderCalendar()};
+
+$('renameBtn').onclick=()=>{for(let i=0;i<4;i++)$('name'+i).value=data.names[i];$('namesOverlay').classList.add('show')};
+$('cancelNames').onclick=()=>$('namesOverlay').classList.remove('show');
+$('saveNames').onclick=()=>{data.names=[0,1,2,3].map(i=>$('name'+i).value.trim()||('Person '+(i+1)));save();$('namesOverlay').classList.remove('show');renderTabs();renderLegend();refreshPersonOptions();renderCalendar()};
+
+$('saveCalendarBtn').onclick=exportCalendar;$('loadCalendarBtn').onclick=()=>$('calendarFileInput').click();
+$('calendarFileInput').onchange=e=>{const f=e.target.files&&e.target.files[0];if(f)importCalendar(f)};
+$('prevWeek').onclick=()=>{$('weekStart').value=localISO(addDays(new Date($('weekStart').value+'T00:00:00'),-7));renderCalendar()};
+$('nextWeek').onclick=()=>{$('weekStart').value=localISO(addDays(new Date($('weekStart').value+'T00:00:00'),7));renderCalendar()};
+$('thisWeek').onclick=()=>{$('weekStart').value=localISO(monday());renderCalendar()};$('weekStart').onchange=renderCalendar;
+$('startHour').onchange=()=>{let s=Number($('startHour').value),e=Number($('endHour').value);if(e<=s){e=Math.min(23,s+1);$('endHour').value=e}data.settings.startHour=s;data.settings.endHour=e;save();renderCalendar()};
+$('endHour').onchange=()=>{let s=Number($('startHour').value),e=Number($('endHour').value);if(e<=s){s=Math.max(0,e-1);$('startHour').value=s}data.settings.startHour=s;data.settings.endHour=e;save();renderCalendar()};
+
+$('weekStart').value=localISO(monday());initHours();renderTabs();renderLegend();refreshPersonOptions();renderCalendar();
+window.addEventListener('resize',()=>renderCalendar());
+</script>
+</body>
+</html>
